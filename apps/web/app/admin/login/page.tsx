@@ -61,7 +61,7 @@ export default function AdminLoginPage() {
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-500 hover:text-zinc-800 mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to FindMyDoc
+          Back to Find Near Doctor
         </Link>
 
         <div className="grid lg:grid-cols-2 gap-10 items-start">

@@ -100,7 +100,7 @@ export function SearchForm({ variant = "hero" }: { variant?: "hero" | "inline" }
 
   const isHero = variant === "hero";
   const fieldClass = isHero
-    ? "w-full pl-10 pr-4 py-3 text-sm font-medium text-zinc-700 rounded-xl border-0 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-brand/30 appearance-none"
+    ? "w-full pl-10 pr-4 py-2.5 text-sm font-medium text-zinc-700 rounded-xl border-0 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-brand/30 appearance-none"
     : "w-full pl-10 pr-4 py-3 text-sm font-medium text-zinc-700 rounded-xl border border-zinc-200 bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 appearance-none";
 
   return (
@@ -109,7 +109,7 @@ export function SearchForm({ variant = "hero" }: { variant?: "hero" | "inline" }
       <div
         className={
           isHero
-            ? "flex flex-col gap-3 p-2 bg-zinc-50 rounded-2xl border border-zinc-200/80"
+            ? "flex flex-col gap-2 p-1.5 bg-zinc-50 rounded-xl border border-zinc-200/80"
             : "flex flex-col gap-3"
         }
       >
@@ -120,10 +120,10 @@ export function SearchForm({ variant = "hero" }: { variant?: "hero" | "inline" }
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Pincode or locality, e.g. 700141 Mogra..."
+              placeholder="Doctor name, pincode or locality..."
               className={
                 isHero
-                  ? "w-full pl-11 pr-4 py-3.5 text-[15px] font-medium text-zinc-900 placeholder:text-zinc-400 rounded-xl border-0 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-brand/30"
+                  ? "w-full pl-11 pr-4 py-2.5 text-sm font-medium text-zinc-900 placeholder:text-zinc-400 rounded-xl border-0 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-brand/30"
                   : "w-full pl-11 pr-4 py-3 text-sm font-medium text-zinc-900 placeholder:text-zinc-400 rounded-xl border border-zinc-200 bg-white focus:outline-none focus:ring-2 focus:ring-brand/30"
               }
             />
@@ -169,7 +169,7 @@ export function SearchForm({ variant = "hero" }: { variant?: "hero" | "inline" }
             type="submit"
             className={
               isHero
-                ? "px-8 py-3 bg-brand text-white text-sm font-bold rounded-xl hover:bg-brand-dark shadow-lg shadow-brand/25 transition-all hover:shadow-brand/40 sm:ml-auto"
+                ? "px-6 py-2.5 bg-brand text-white text-sm font-bold rounded-xl hover:bg-brand-dark shadow-md shadow-brand/20 transition-all sm:ml-auto"
                 : "px-6 py-3 bg-brand text-white text-sm font-bold rounded-xl hover:bg-brand-dark transition-colors sm:ml-auto"
             }
           >
@@ -179,7 +179,7 @@ export function SearchForm({ variant = "hero" }: { variant?: "hero" | "inline" }
       </div>
 
       {/* Quick day chips */}
-      <div className={`flex flex-wrap gap-2 ${isHero ? "mt-3 ml-1" : "mt-3"}`}>
+      <div className={`flex flex-wrap gap-1.5 ${isHero ? "mt-2 ml-0.5" : "mt-3"}`}>
         {[
           { value: "today", label: "Today" },
           { value: "Mon", label: "Mon" },
@@ -204,7 +204,7 @@ export function SearchForm({ variant = "hero" }: { variant?: "hero" | "inline" }
               );
               router.push(`/search?${p.toString()}`);
             }}
-            className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-colors ${
+            className={`text-[11px] font-bold px-2.5 py-1 rounded-md transition-colors ${
               day === value
                 ? "bg-brand text-white"
                 : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
@@ -219,7 +219,7 @@ export function SearchForm({ variant = "hero" }: { variant?: "hero" | "inline" }
         type="button"
         onClick={handleLocation}
         disabled={loading}
-        className={`flex items-center gap-2 text-sm font-semibold text-brand hover:text-brand-dark disabled:opacity-50 transition-colors ${isHero ? "mt-3 ml-1" : "mt-3"}`}
+        className={`flex items-center gap-1.5 text-xs font-semibold text-brand hover:text-brand-dark disabled:opacity-50 transition-colors ${isHero ? "mt-2 ml-0.5" : "mt-3"}`}
       >
         {loading ? (
           <Loader2 className="w-4 h-4 animate-spin" />

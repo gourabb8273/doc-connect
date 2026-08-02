@@ -59,7 +59,7 @@ export default function DoctorLoginPage() {
             <Stethoscope className="w-6 h-6 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-slate-900 text-center">
-            Join FindMyDoc
+            Join Find Near Doctor
           </h1>
           <p className="text-slate-500 text-sm text-center mt-1.5 max-w-xs">
             List your practice. We manually verify every doctor before your

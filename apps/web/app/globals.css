@@ -60,3 +60,90 @@ body {
     0 8px 16px rgba(37, 99, 235, 0.08),
     0 24px 48px rgba(0, 0, 0, 0.1);
 }
+
+/* Hero rich background */
+@keyframes hero-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes hero-orb-float-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(24px, -18px) scale(1.1); }
+}
+
+@keyframes hero-orb-float-b {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.55; }
+  50% { transform: translate(-20px, 22px) scale(1.15); opacity: 0.85; }
+}
+
+@keyframes hero-orb-float-c {
+  0%, 100% { transform: translate(0, 0) scale(0.95); }
+  33% { transform: translate(15px, 12px) scale(1.08); }
+  66% { transform: translate(-12px, -8px) scale(1.02); }
+}
+
+@keyframes hero-icon-glow {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.12); }
+}
+
+@keyframes hero-ring-expand {
+  0% { transform: scale(0.88); opacity: 0.55; }
+  70% { transform: scale(1.18); opacity: 0; }
+  100% { transform: scale(0.88); opacity: 0; }
+}
+
+.hero-section {
+  background-color: #0a1020;
+  background-image: linear-gradient(
+    125deg,
+    #0f172a 0%,
+    #1e3a8a 25%,
+    #312e81 50%,
+    #0f172a 75%,
+    #1e1b4b 100%
+  );
+  background-size: 300% 300%;
+  animation: hero-gradient-shift 16s ease infinite;
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.hero-orb-a {
+  width: 22rem;
+  height: 22rem;
+  background: rgba(37, 99, 235, 0.55);
+  animation: hero-orb-float-a 12s ease-in-out infinite;
+}
+
+.hero-orb-b {
+  width: 18rem;
+  height: 18rem;
+  background: rgba(249, 115, 22, 0.4);
+  animation: hero-orb-float-b 14s ease-in-out infinite;
+}
+
+.hero-orb-c {
+  width: 20rem;
+  height: 20rem;
+  background: rgba(139, 92, 246, 0.45);
+  animation: hero-orb-float-c 10s ease-in-out infinite;
+}
+
+.hero-icon-glow {
+  animation: hero-icon-glow 4s ease-in-out infinite;
+}
+
+.hero-ring-expand {
+  animation: hero-ring-expand 3s ease-out infinite;
+}
+
+.hero-ring-expand-delay {
+  animation: hero-ring-expand 3s ease-out 1.5s infinite;
+}

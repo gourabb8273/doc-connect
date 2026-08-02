@@ -2,66 +2,150 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { SearchForm } from "@/components/patient/SearchForm";
-import { ShieldCheck, Clock, Navigation, Stethoscope, type LucideIcon } from "lucide-react";
+import {
+  ShieldCheck,
+  Clock,
+  Navigation,
+  Stethoscope,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const USP_ITEMS: { icon: LucideIcon; label: string; hint: string }[] = [
-  { icon: Navigation, label: "Nearest first", hint: "By distance and availability" },
-  { icon: Clock, label: "Doctor managed", hint: "Status and timings from the doctor" },
-  { icon: ShieldCheck, label: "Verified", hint: "Checked before going live" },
+const USP_ITEMS: { icon: LucideIcon; label: string }[] = [
+  { icon: Navigation, label: "Nearest first" },
+  { icon: Zap, label: "Real time status" },
+  { icon: Clock, label: "Doctor managed" },
+  { icon: ShieldCheck, label: "Verified" },
 ];
 
-function UspPill({
-  icon: Icon,
-  label,
-  hint,
-  variant = "dark",
-}: {
-  icon: LucideIcon;
-  label: string;
-  hint?: string;
-  variant?: "dark" | "light";
-}) {
-  const isDark = variant === "dark";
+function UspPill({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
+    <div className="flex items-center gap-2 rounded-lg backdrop-blur-md px-2.5 py-1.5 bg-white/10 border border-white/15">
+      <Icon className="w-3.5 h-3.5 text-sky-200 shrink-0" strokeWidth={2.5} />
+      <p className="text-[11px] font-bold text-white leading-tight">{label}</p>
+    </div>
+  );
+}
+
+function VisionCard() {
+  return (
+    <div className="mt-3 max-w-lg relative z-10 pl-3 border-l-2 border-sky-400/60">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-sky-200 mb-1">
+        Vision
+      </p>
+      <p className="text-xs text-white/80 leading-snug">
+        Prescription lost, doctor changed days, clinic moved. You should not call
+        around or show up blind. Get real time date, time, and status from the
+        doctor themselves and save the trip. Built from challenges I faced
+        personally — for all patients, making it easier to connect and reduce
+        time and stress.
+      </p>
+      <p className="mt-1.5 text-[11px] text-white/35">— Gourab Banerjee</p>
+    </div>
+  );
+}
+
+function DoctorIcon({
+  scrollY,
+  progress,
+}: {
+  scrollY: number;
+  progress: number;
+}) {
+  const drift = scrollY * 0.12;
+  const rotate = scrollY * 0.025;
+  const opacity = Math.max(0.72 - progress * 0.3, 0.38);
+
+  return (
+    /* Anchor: vertically centred, right quarter of hero */
     <div
-      className={cn(
-        "flex items-center gap-3 rounded-xl backdrop-blur-md border transition-colors",
-        isDark
-          ? "px-3.5 py-2.5 bg-white/10 border-white/15 hover:bg-white/[0.14]"
-          : "px-3 py-2 bg-brand-light/80 border-brand/10"
-      )}
+      className="absolute z-[1] pointer-events-none select-none"
+      style={{
+        top: "50%",
+        right: "6%",
+        transform: `translateY(calc(-50% + ${drift}px)) rotate(${rotate}deg)`,
+        opacity,
+      }}
+      aria-hidden
     >
+      {/* Ambient blue glow blob — behind everything */}
       <div
-        className={cn(
-          "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
-          isDark ? "bg-white/15" : "bg-white shadow-sm"
-        )}
+        className="absolute rounded-full"
+        style={{
+          width: "26rem",
+          height: "26rem",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%,-50%)",
+          background: "radial-gradient(circle, rgba(37,99,235,0.45) 0%, transparent 70%)",
+          filter: "blur(48px)",
+          animation: "hero-orb-float-a 12s ease-in-out infinite",
+        }}
+      />
+      {/* Purple accent glow */}
+      <div
+        className="absolute rounded-full"
+        style={{
+          width: "18rem",
+          height: "18rem",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-30%,-60%)",
+          background: "radial-gradient(circle, rgba(139,92,246,0.4) 0%, transparent 70%)",
+          filter: "blur(40px)",
+          animation: "hero-orb-float-c 10s ease-in-out 2s infinite",
+        }}
+      />
+
+      {/* Outer expanding rings */}
+      <div
+        className="absolute rounded-full border border-white/18 hero-ring-expand"
+        style={{ width: "22rem", height: "22rem", top: "50%", left: "50%", translate: "-50% -50%" }}
+      />
+      <div
+        className="absolute rounded-full border border-brand/35 hero-ring-expand-delay"
+        style={{ width: "22rem", height: "22rem", top: "50%", left: "50%", translate: "-50% -50%" }}
+      />
+
+      {/* Mid ring — static, subtle */}
+      <div
+        className="absolute rounded-full border border-white/12"
+        style={{ width: "16rem", height: "16rem", top: "50%", left: "50%", translate: "-50% -50%" }}
+      />
+
+      {/* Pulsing core glow */}
+      <div
+        className="hero-icon-glow absolute rounded-full"
+        style={{
+          width: "10rem",
+          height: "10rem",
+          top: "50%",
+          left: "50%",
+          translate: "-50% -50%",
+          background: "radial-gradient(circle, rgba(37,99,235,0.7) 0%, transparent 70%)",
+          filter: "blur(20px)",
+        }}
+      />
+
+      {/* Glass disc with stethoscope */}
+      <div
+        className="relative rounded-full flex items-center justify-center"
+        style={{
+          width: "10rem",
+          height: "10rem",
+          background:
+            "linear-gradient(145deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.07) 50%, rgba(37,99,235,0.22) 100%)",
+          boxShadow:
+            "0 0 0 1.5px rgba(255,255,255,0.3), 0 8px 40px rgba(37,99,235,0.55), inset 0 1px 0 rgba(255,255,255,0.35)",
+          backdropFilter: "blur(8px)",
+        }}
       >
-        <Icon
-          className={cn("w-4 h-4", isDark ? "text-white" : "text-brand")}
-          strokeWidth={2.5}
+        <Stethoscope
+          className="text-white/90 drop-shadow-[0_0_32px_rgba(255,255,255,0.55)]"
+          style={{ width: "4.5rem", height: "4.5rem" }}
+          strokeWidth={1.15}
         />
-      </div>
-      <div className="min-w-0">
-        <p
-          className={cn(
-            "text-sm font-bold leading-tight",
-            isDark ? "text-white" : "text-zinc-900"
-          )}
-        >
-          {label}
-        </p>
-        {hint && (
-          <p
-            className={cn(
-              "text-[10px] leading-snug mt-0.5",
-              isDark ? "text-white/55" : "text-zinc-500"
-            )}
-          >
-            {hint}
-          </p>
-        )}
       </div>
     </div>
   );
@@ -81,61 +165,59 @@ export function HomeHero({ availableNow }: HomeHeroProps) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const progress = Math.min(scrollY / 320, 1);
-  const iconRotate = scrollY * 0.08;
-  const iconScale = 1 + progress * 0.08;
-  const iconY = scrollY * 0.3;
-  const iconOpacity = 0.28 - progress * 0.12;
-  const heroFade = 1 - progress * 0.45;
-  const searchLift = Math.min(scrollY * 0.06, 18);
+  const progress = Math.min(scrollY / 280, 1);
+  const heroFade = 1 - progress * 0.35;
+  const searchLift = Math.min(scrollY * 0.05, 12);
 
   return (
-    <section className="mesh-dark text-white relative overflow-hidden">
-      <div
-        className="absolute inset-0 transition-opacity duration-300"
-        style={{ opacity: 0.25 + progress * 0.35 }}
-        aria-hidden
-      >
+    <section className="hero-section text-white relative overflow-hidden">
+      {/* Ambient background orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0" aria-hidden>
         <div
-          className="absolute top-20 left-10 w-72 h-72 bg-brand/30 rounded-full blur-[100px]"
-          style={{ transform: `translateY(${scrollY * 0.15}px)` }}
+          className="hero-orb hero-orb-b absolute opacity-40 scale-90"
+          style={{ top: "1rem", left: "-5rem", transform: `translateY(${scrollY * 0.08}px)` }}
         />
         <div
-          className="absolute bottom-0 right-10 w-96 h-96 bg-accent/20 rounded-full blur-[120px]"
-          style={{ transform: `translateY(${-scrollY * 0.1}px)` }}
+          className="hero-orb hero-orb-a absolute opacity-30 scale-75"
+          style={{ bottom: "-2rem", left: "30%", transform: `translateY(${-scrollY * 0.06}px)` }}
         />
       </div>
 
+      {/* Big centred doctor icon — right half of hero */}
+      <DoctorIcon scrollY={scrollY} progress={progress} />
+
       <div
-        className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-14 transition-opacity duration-300"
+        className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-7 transition-opacity duration-500"
         style={{ opacity: heroFade }}
       >
-        <div className="grid lg:grid-cols-[1fr_17rem] xl:grid-cols-[1fr_19rem] gap-8 lg:gap-10 items-start">
-          {/* Left: headline */}
-          <div className="max-w-xl">
-            <div className="inline-flex items-center gap-2 bg-white/10 text-white/90 text-xs font-bold px-3 py-1.5 rounded-full mb-5 backdrop-blur-md border border-white/10">
+        {/* Two-col: text left, USP pills right */}
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_9rem] gap-4 items-start">
+          <div className="max-w-lg">
+            {/* Live badge */}
+            <div className="inline-flex items-center gap-2 bg-white/10 text-white/90 text-[11px] font-bold px-2.5 py-1 rounded-full mb-2.5 backdrop-blur-md border border-white/10">
               <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
               {availableNow} available now in Mogra
             </div>
 
-            <h1 className="text-3xl sm:text-[2.75rem] font-extrabold tracking-tight leading-[1.12] mb-3">
+            <h1 className="text-[1.6rem] sm:text-[2.35rem] font-extrabold tracking-tight leading-[1.15] mb-1.5">
               Find a verified doctor
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-orange-300">
                 before you step out.
               </span>
             </h1>
 
-            <p className="text-zinc-300 text-sm sm:text-base leading-relaxed">
-              Know before you go. Availability, clinic, day, and timings managed by the
-              doctor, not a directory. Free to search, no account.
+            <p className="text-zinc-200 text-sm leading-snug">
+              Know before you go. Live availability, clinic, day, and timings from the doctor.
             </p>
 
-            {/* Mobile / tablet USP row */}
-            <div className="flex flex-wrap gap-2 mt-6 lg:hidden">
+            <VisionCard />
+
+            {/* Mobile USP chips */}
+            <div className="flex flex-wrap gap-1.5 mt-2.5 lg:hidden">
               {USP_ITEMS.map(({ icon: Icon, label }) => (
                 <span
                   key={label}
-                  className="inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-white/10 border border-white/15 backdrop-blur-md"
+                  className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 border border-white/15"
                 >
                   <Icon className="w-3 h-3" strokeWidth={2.5} />
                   {label}
@@ -144,49 +226,24 @@ export function HomeHero({ availableNow }: HomeHeroProps) {
             </div>
           </div>
 
-          {/* RHS: USP stack + doctor icon */}
-          <div className="relative hidden lg:block min-h-[15rem]">
-            <div
-              className="absolute -right-4 top-0 bottom-8 flex items-center justify-center pointer-events-none select-none will-change-transform"
-              style={{
-                transform: `translateY(${iconY}px) rotate(${iconRotate}deg) scale(${iconScale})`,
-                opacity: Math.max(iconOpacity, 0.08),
-              }}
-              aria-hidden
-            >
-              <div className="relative">
-                <div
-                  className="absolute inset-0 bg-brand/20 rounded-full blur-3xl animate-pulse"
-                  style={{ animationDuration: "4s" }}
-                />
-                <div className="w-44 h-44 xl:w-52 xl:h-52 rounded-full border border-white/10 bg-white/[0.04] backdrop-blur-sm flex items-center justify-center">
-                  <Stethoscope
-                    className="w-20 h-20 xl:w-24 xl:h-24 text-white/25"
-                    strokeWidth={1}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="relative z-10 flex flex-col gap-2 pt-1">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-white/45 mb-1 pl-0.5">
-                Why it works
-              </p>
-              {USP_ITEMS.map((item) => (
-                <UspPill key={item.label} {...item} variant="dark" />
-              ))}
-            </div>
+          {/* Desktop USP pills */}
+          <div className="hidden lg:flex flex-col gap-1 pt-1 z-10">
+            <p className="text-[9px] font-bold uppercase tracking-widest text-white/40 mb-0.5">
+              Our promise
+            </p>
+            {USP_ITEMS.map((item) => (
+              <UspPill key={item.label} {...item} />
+            ))}
           </div>
         </div>
 
         {/* Search */}
         <div
-          className="max-w-3xl rounded-[20px] p-4 sm:p-5 shadow-2xl shadow-black/25 transition-all duration-300 mt-8 lg:mt-10"
-          style={{
-            transform: `translateY(${-searchLift}px)`,
-            background: `rgba(255,255,255,${0.97 + progress * 0.03})`,
-            boxShadow: `0 24px 48px rgba(0,0,0,${0.18 + progress * 0.12}), 0 0 0 1px rgba(255,255,255,${0.1 + progress * 0.2})`,
-          }}
+          className={cn(
+            "relative z-10 max-w-3xl rounded-2xl p-3 sm:p-3.5 mt-4",
+            "transition-all duration-500 shadow-2xl shadow-black/20 bg-white/[0.98]"
+          )}
+          style={{ transform: `translateY(${-searchLift}px)` }}
         >
           <Suspense>
             <SearchForm variant="hero" />

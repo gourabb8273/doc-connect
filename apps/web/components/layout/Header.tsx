@@ -35,10 +35,10 @@ export function Header() {
           </div>
           <div className="flex flex-col leading-none">
             <span className="font-bold text-zinc-900 text-[15px] tracking-tight">
-              FindMyDoc
+              Find Near Doctor
             </span>
             <span className="text-[10px] font-medium text-zinc-400 tracking-wide">
-              verified care
+              verified · live
             </span>
           </div>
         </Link>

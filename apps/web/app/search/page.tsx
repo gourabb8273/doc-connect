@@ -1,7 +1,8 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { SearchForm } from "@/components/patient/SearchForm";
 import { DoctorCard } from "@/components/patient/DoctorCard";
-import { SearchX } from "lucide-react";
+import { SearchX, Home, RotateCcw } from "lucide-react";
 import doctorsData from "@/data/doctors.json";
 import type { Doctor } from "@/lib/types";
 import {
@@ -50,7 +51,7 @@ export default async function SearchPage({ searchParams }: Props) {
           )}
           {!hasFilters && (
             <p className="text-sm text-zinc-500 mt-1 font-medium">
-              Search by pincode, specialization, day, or time
+              Search by doctor name, pincode, specialization, day, or time
             </p>
           )}
         </div>
@@ -64,16 +65,36 @@ export default async function SearchPage({ searchParams }: Props) {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mb-4">
-            <SearchX className="w-7 h-7 text-slate-400" />
+          <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-5">
+            <SearchX className="w-8 h-8 text-slate-400" />
           </div>
-          <h3 className="font-semibold text-slate-800 mb-1">
-            No doctors match these filters
+          <h3 className="font-bold text-lg text-slate-800 mb-1">
+            No doctors found
           </h3>
-          <p className="text-sm text-slate-500 max-w-sm">
-            Try a nearby pincode, a different day, or widen the time slot. All
-            doctors in Mogra are verified and updated live.
+          <p className="text-sm text-slate-500 max-w-xs mb-7">
+            {hasFilters
+              ? "Try adjusting your filters — a nearby pincode, different day, or wider time slot."
+              : "No doctors available right now. Try searching by pincode, specialization, or day."}
           </p>
+
+          <div className="flex flex-wrap gap-3 justify-center">
+            {hasFilters && (
+              <Link
+                href="/search"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand text-white text-sm font-semibold shadow hover:bg-brand-dark transition-colors"
+              >
+                <RotateCcw className="w-4 h-4" />
+                Clear filters
+              </Link>
+            )}
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-semibold shadow-sm hover:bg-slate-50 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              Back to home
+            </Link>
+          </div>
         </div>
       )}
     </div>

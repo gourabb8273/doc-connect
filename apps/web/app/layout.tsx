@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SwRegister } from "@/components/SwRegister";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -11,14 +12,18 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "FindMyDoc | Verified doctors near you",
+  title: "Find Near Doctor | Verified doctors near you",
   description:
-    "Get the nearest verified doctor with real-time updates on location, clinic timings, and availability.",
+    "Find verified doctors near you with live availability, clinic, day, and timings updated by the doctor.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "FindMyDoc",
+    title: "Find Near Doctor",
+  },
+  icons: {
+    icon: "/icon-192.png",
+    apple: "/apple-touch-icon.png",
   },
 };
 
@@ -36,6 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={jakarta.variable}>
       <body className={`${jakarta.className} min-h-screen flex flex-col bg-zinc-100 antialiased`}>
+        <SwRegister />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
