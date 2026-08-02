@@ -28,23 +28,6 @@ function UspPill({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   );
 }
 
-function VisionCard() {
-  return (
-    <div className="mt-3 max-w-lg relative z-10 pl-3 border-l-2 border-sky-400/60">
-      <p className="text-[10px] font-bold uppercase tracking-widest text-sky-200 mb-1">
-        Vision
-      </p>
-      <p className="text-xs text-white/80 leading-snug">
-        Prescription lost, doctor changed days, clinic moved. You should not call
-        around or show up blind. Get real time date, time, and status from the
-        doctor themselves and save the trip. Built from challenges I faced
-        personally — for all patients, making it easier to connect and reduce
-        time and stress.
-      </p>
-      <p className="mt-1.5 text-[11px] text-white/35">— Gourab Banerjee</p>
-    </div>
-  );
-}
 
 function DoctorIcon({
   scrollY,
@@ -207,10 +190,8 @@ export function HomeHero({ availableNow }: HomeHeroProps) {
             </h1>
 
             <p className="text-zinc-200 text-sm leading-snug">
-              Know before you go. Live availability, clinic, day, and timings from the doctor.
+              Real time live updates on availability, day, time and location from doctor.
             </p>
-
-            <VisionCard />
 
             {/* Mobile USP chips */}
             <div className="flex flex-wrap gap-1.5 mt-2.5 lg:hidden">

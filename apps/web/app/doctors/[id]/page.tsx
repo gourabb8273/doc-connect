@@ -67,11 +67,11 @@ export default async function DoctorProfilePage({ params }: Props) {
 
       {/* Profile card overlapping hero */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 -mt-20 relative z-10 pb-12">
-        <div className="bg-white rounded-[24px] card-shadow overflow-hidden">
+        <div className="bg-white rounded-[24px] card-shadow">
           {/* Doctor header */}
           <div className="p-6 sm:p-8 border-b border-zinc-100">
             <div className="flex gap-5 items-start">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-[20px] overflow-hidden ring-4 ring-white shadow-xl shrink-0 -mt-16 sm:-mt-20">
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-[20px] overflow-hidden ring-4 ring-white bg-white shadow-xl shrink-0 -mt-16 sm:-mt-20">
                 <Image
                   src={doctor.photoUrl}
                   alt={doctor.name}
