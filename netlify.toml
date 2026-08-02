@@ -1,0 +1,11 @@
+# Netlify config for FindMyDoc (Next.js app lives in apps/web)
+[build]
+  base = "apps/web"
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
