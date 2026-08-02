@@ -1,0 +1,815 @@
+[
+  {
+    "id": "dr-001",
+    "name": "Dr. Ananya Sen",
+    "photoUrl": "https://randomuser.me/api/portraits/women/44.jpg",
+    "phone": "+91-98300-11001",
+    "registrationNumber": "WBMC-2008-14523",
+    "stateMedicalCouncil": "WBMC",
+    "specialization": "General Physician",
+    "yearsOfExperience": 16,
+    "status": "verified",
+    "availabilityStatus": "available",
+    "practiceLocations": [
+      {
+        "name": "Sen Clinic",
+        "address": "12A, Mogra Main Road, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.50119264222725,
+        "lng": 88.24353490054365,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Mon",
+              "Wed",
+              "Fri"
+            ],
+            "startTime": "09:00",
+            "endTime": "13:00"
+          },
+          {
+            "days": [
+              "Mon",
+              "Wed",
+              "Fri"
+            ],
+            "startTime": "17:00",
+            "endTime": "20:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80"
+      },
+      {
+        "name": "South City Mall Clinic",
+        "address": "Shop 204, Station Road, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.512424074801586,
+        "lng": 88.24286692216378,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Tue",
+              "Thu",
+              "Sat"
+            ],
+            "startTime": "10:00",
+            "endTime": "14:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1631217868264-e5b1bb5e5bb1?w=800&q=80"
+      }
+    ],
+    "visibility": {
+      "showPhone": true,
+      "showFee": true,
+      "showExactAddress": true,
+      "showBio": true,
+      "showLanguages": true,
+      "showAvailabilityNote": false
+    },
+    "consultationFee": 400,
+    "bio": "General medicine and preventive care. Evening slots at Mogra, weekend mornings at Mogra.",
+    "languages": [
+      "Bengali",
+      "Hindi",
+      "English"
+    ],
+    "qualifications": [
+      "MBBS (Calcutta Medical College)",
+      "MD – General Medicine"
+    ],
+    "verifiedAt": "2026-07-15T09:00:00Z",
+    "createdAt": "2026-07-10T08:00:00Z",
+    "updatedAt": "2026-08-02T14:30:00Z"
+  },
+  {
+    "id": "dr-002",
+    "name": "Dr. Rahul Bose",
+    "photoUrl": "https://randomuser.me/api/portraits/men/32.jpg",
+    "phone": "+91-98300-22002",
+    "registrationNumber": "WBMC-2012-19847",
+    "stateMedicalCouncil": "WBMC",
+    "specialization": "Paediatrician",
+    "yearsOfExperience": 12,
+    "status": "verified",
+    "availabilityStatus": "busy",
+    "practiceLocations": [
+      {
+        "name": "Little Stars Child Care",
+        "address": "3B, Bata Nagar, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.50503946473972,
+        "lng": 88.25524298289864,
+        "consultationType": "both",
+        "schedule": [
+          {
+            "days": [
+              "Mon",
+              "Tue",
+              "Wed",
+              "Thu",
+              "Fri"
+            ],
+            "startTime": "09:30",
+            "endTime": "13:30"
+          },
+          {
+            "days": [
+              "Mon",
+              "Wed",
+              "Fri"
+            ],
+            "startTime": "16:00",
+            "endTime": "19:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1586773868994-4995c311d7f8?w=800&q=80"
+      },
+      {
+        "name": "Online Consultations",
+        "address": "Video call",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.5726,
+        "lng": 88.4326,
+        "consultationType": "online",
+        "schedule": [
+          {
+            "days": [
+              "Sat"
+            ],
+            "startTime": "10:00",
+            "endTime": "13:00"
+          }
+        ]
+      }
+    ],
+    "visibility": {
+      "showPhone": false,
+      "showFee": true,
+      "showExactAddress": true,
+      "showBio": true,
+      "showLanguages": true,
+      "showAvailabilityNote": false
+    },
+    "consultationFee": 600,
+    "bio": "Paediatrician for newborn care, vaccinations, and child development. Weekday clinic + Saturday online.",
+    "languages": [
+      "Bengali",
+      "Hindi",
+      "English"
+    ],
+    "qualifications": [
+      "MBBS",
+      "MD – Paediatrics (AIIMS)"
+    ],
+    "verifiedAt": "2026-07-18T10:00:00Z",
+    "createdAt": "2026-07-12T08:00:00Z",
+    "updatedAt": "2026-08-02T11:00:00Z"
+  },
+  {
+    "id": "dr-003",
+    "name": "Dr. Priya Mukherjee",
+    "photoUrl": "https://randomuser.me/api/portraits/women/68.jpg",
+    "phone": "+91-98300-33003",
+    "registrationNumber": "WBMC-2015-22341",
+    "stateMedicalCouncil": "WBMC",
+    "specialization": "Gynaecologist",
+    "yearsOfExperience": 9,
+    "status": "verified",
+    "availabilityStatus": "available",
+    "practiceLocations": [
+      {
+        "name": "Mukherjee Women's Clinic",
+        "address": "7, Kolkata Bankra Road, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.505190500322577,
+        "lng": 88.25178341213106,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Mon",
+              "Thu"
+            ],
+            "startTime": "11:00",
+            "endTime": "15:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1576091160399-217ba24ea032?w=800&q=80"
+      },
+      {
+        "name": "Ruby General Hospital OPD",
+        "address": "Kasba Golpark, Maheshtala, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.511216020733805,
+        "lng": 88.2438316725028,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Tue",
+              "Fri"
+            ],
+            "startTime": "14:00",
+            "endTime": "18:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1538107418322-27aedce4d3f8?w=800&q=80"
+      },
+      {
+        "name": "Weekend Clinic",
+        "address": "22, NS Road, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.51132664408936,
+        "lng": 88.24835773162266,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Sat"
+            ],
+            "startTime": "09:00",
+            "endTime": "12:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80"
+      }
+    ],
+    "visibility": {
+      "showPhone": true,
+      "showFee": true,
+      "showExactAddress": false,
+      "showBio": true,
+      "showLanguages": true,
+      "showAvailabilityNote": false
+    },
+    "consultationFee": 700,
+    "bio": "Women's health across three clinics. Mogra Mon/Thu, Mogra Tue/Fri, Mogra Saturday.",
+    "languages": [
+      "Bengali",
+      "English"
+    ],
+    "qualifications": [
+      "MBBS",
+      "MS – Obstetrics & Gynaecology"
+    ],
+    "verifiedAt": "2026-07-20T09:00:00Z",
+    "createdAt": "2026-07-15T08:00:00Z",
+    "updatedAt": "2026-08-02T09:15:00Z"
+  },
+  {
+    "id": "dr-004",
+    "name": "Dr. Sourav Chatterjee",
+    "photoUrl": "https://randomuser.me/api/portraits/men/54.jpg",
+    "phone": "+91-98300-44004",
+    "registrationNumber": "WBMC-2005-09871",
+    "stateMedicalCouncil": "WBMC",
+    "specialization": "Orthopaedic Surgeon",
+    "yearsOfExperience": 19,
+    "status": "verified",
+    "availabilityStatus": "delayed",
+    "availabilityNote": "Running 30 mins late today",
+    "practiceLocations": [
+      {
+        "name": "Bone & Joint Clinic",
+        "address": "21, Mogra Bazar, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.509258130676407,
+        "lng": 88.24720263894619,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Mon",
+              "Wed",
+              "Fri"
+            ],
+            "startTime": "10:00",
+            "endTime": "14:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80"
+      },
+      {
+        "name": "Peerless Hospital OPD",
+        "address": "360, Tentultala, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.504696637201917,
+        "lng": 88.25538067170643,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Tue",
+              "Thu"
+            ],
+            "startTime": "15:00",
+            "endTime": "19:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1631217868264-e5b1bb5e5bb1?w=800&q=80"
+      }
+    ],
+    "visibility": {
+      "showPhone": false,
+      "showFee": false,
+      "showExactAddress": true,
+      "showBio": true,
+      "showLanguages": false,
+      "showAvailabilityNote": true
+    },
+    "consultationFee": 1000,
+    "bio": "Orthopaedic surgeon. Mogra Mon/Wed/Fri mornings, Peerless Mogra Tue/Thu evenings.",
+    "languages": [
+      "Bengali",
+      "Hindi",
+      "English"
+    ],
+    "qualifications": [
+      "MBBS",
+      "MS – Orthopaedics",
+      "Fellowship in Joint Replacement"
+    ],
+    "verifiedAt": "2026-07-10T09:00:00Z",
+    "createdAt": "2026-07-05T08:00:00Z",
+    "updatedAt": "2026-08-02T08:00:00Z"
+  },
+  {
+    "id": "dr-005",
+    "name": "Dr. Meera Das",
+    "photoUrl": "https://randomuser.me/api/portraits/women/22.jpg",
+    "phone": "+91-98300-55005",
+    "registrationNumber": "WBMC-2018-28901",
+    "stateMedicalCouncil": "WBMC",
+    "specialization": "Dermatologist",
+    "yearsOfExperience": 6,
+    "status": "verified",
+    "availabilityStatus": "on_leave",
+    "practiceLocations": [
+      {
+        "name": "Skin & Care Clinic",
+        "address": "5B, Pailan, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.508428851674445,
+        "lng": 88.24766475427764,
+        "consultationType": "both",
+        "schedule": [
+          {
+            "days": [
+              "Tue",
+              "Thu",
+              "Sat"
+            ],
+            "startTime": "11:00",
+            "endTime": "16:00"
+          }
+        ]
+      }
+    ],
+    "visibility": {
+      "showPhone": true,
+      "showFee": true,
+      "showExactAddress": false,
+      "showBio": false,
+      "showLanguages": true,
+      "showAvailabilityNote": false
+    },
+    "consultationFee": 800,
+    "bio": "Dermatology for acne, pigmentation, and hair disorders. Tue/Thu/Sat at Mogra.",
+    "languages": [
+      "Bengali",
+      "English"
+    ],
+    "qualifications": [
+      "MBBS",
+      "MD – Dermatology"
+    ],
+    "verifiedAt": "2026-07-25T09:00:00Z",
+    "createdAt": "2026-07-20T08:00:00Z",
+    "updatedAt": "2026-08-01T18:00:00Z"
+  },
+  {
+    "id": "dr-006",
+    "name": "Dr. Arindam Roy",
+    "photoUrl": "https://randomuser.me/api/portraits/men/76.jpg",
+    "phone": "+91-98300-66006",
+    "registrationNumber": "WBMC-2010-16234",
+    "stateMedicalCouncil": "WBMC",
+    "specialization": "Cardiologist",
+    "yearsOfExperience": 14,
+    "status": "verified",
+    "availabilityStatus": "available",
+    "practiceLocations": [
+      {
+        "name": "Heart Care Centre",
+        "address": "9, Akra, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.507715729697072,
+        "lng": 88.24073586634597,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Mon",
+              "Wed",
+              "Fri"
+            ],
+            "startTime": "08:00",
+            "endTime": "12:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1576091160399-217ba24ea032?w=800&q=80"
+      },
+      {
+        "name": "Fortis Hospital OPD",
+        "address": "730, Nungi Station Road, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.51079661741528,
+        "lng": 88.25124454327737,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Tue",
+              "Thu"
+            ],
+            "startTime": "14:00",
+            "endTime": "17:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1538107418322-27aedce4d3f8?w=800&q=80"
+      }
+    ],
+    "visibility": {
+      "showPhone": true,
+      "showFee": true,
+      "showExactAddress": true,
+      "showBio": true,
+      "showLanguages": true,
+      "showAvailabilityNote": false
+    },
+    "consultationFee": 1200,
+    "bio": "Cardiologist. Mogra mornings Mon/Wed/Fri, Fortis Mogra Tue/Thu afternoons.",
+    "languages": [
+      "Bengali",
+      "Hindi",
+      "English"
+    ],
+    "qualifications": [
+      "MBBS",
+      "MD – Medicine",
+      "DM – Cardiology"
+    ],
+    "verifiedAt": "2026-07-12T09:00:00Z",
+    "createdAt": "2026-07-08T08:00:00Z",
+    "updatedAt": "2026-08-02T13:00:00Z"
+  },
+  {
+    "id": "dr-008",
+    "name": "Dr. Amit Banerjee",
+    "photoUrl": "https://randomuser.me/api/portraits/men/45.jpg",
+    "phone": "+91-98300-88008",
+    "registrationNumber": "WBMC-2011-17654",
+    "stateMedicalCouncil": "WBMC",
+    "specialization": "ENT Specialist",
+    "yearsOfExperience": 11,
+    "status": "verified",
+    "availabilityStatus": "available",
+    "practiceLocations": [
+      {
+        "name": "Banerjee ENT Clinic",
+        "address": "18, Budge Budge Road, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.510332300090877,
+        "lng": 88.2490788944572,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Mon",
+              "Tue",
+              "Wed",
+              "Thu",
+              "Fri"
+            ],
+            "startTime": "10:00",
+            "endTime": "13:00"
+          },
+          {
+            "days": [
+              "Mon",
+              "Wed",
+              "Fri"
+            ],
+            "startTime": "18:00",
+            "endTime": "21:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80"
+      },
+      {
+        "name": "Dum Dum Clinic",
+        "address": "45, Mogra Main Road, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.510539364613688,
+        "lng": 88.24671777056113,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Sat"
+            ],
+            "startTime": "09:00",
+            "endTime": "13:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80"
+      }
+    ],
+    "visibility": {
+      "showPhone": true,
+      "showFee": true,
+      "showExactAddress": true,
+      "showBio": true,
+      "showLanguages": true,
+      "showAvailabilityNote": false
+    },
+    "consultationFee": 550,
+    "bio": "ENT and sinus specialist. Weekday evenings at Mogra, Saturday at Mogra.",
+    "languages": [
+      "Bengali",
+      "Hindi",
+      "English"
+    ],
+    "qualifications": [
+      "MBBS",
+      "MS – ENT"
+    ],
+    "verifiedAt": "2026-07-22T09:00:00Z",
+    "createdAt": "2026-07-18T08:00:00Z",
+    "updatedAt": "2026-08-02T10:00:00Z"
+  },
+  {
+    "id": "dr-009",
+    "name": "Dr. Ritu Sharma",
+    "photoUrl": "https://randomuser.me/api/portraits/women/33.jpg",
+    "phone": "+91-98300-99009",
+    "registrationNumber": "WBMC-2016-24567",
+    "stateMedicalCouncil": "WBMC",
+    "specialization": "Psychiatrist",
+    "yearsOfExperience": 8,
+    "status": "verified",
+    "availabilityStatus": "available",
+    "practiceLocations": [
+      {
+        "name": "Mind Wellness Centre",
+        "address": "2A, Station Road, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.509975202641883,
+        "lng": 88.24334909245012,
+        "consultationType": "both",
+        "schedule": [
+          {
+            "days": [
+              "Mon",
+              "Wed"
+            ],
+            "startTime": "14:00",
+            "endTime": "19:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1631217868264-e5b1bb5e5bb1?w=800&q=80"
+      },
+      {
+        "name": "Online Sessions",
+        "address": "Video call",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.553,
+        "lng": 88.351,
+        "consultationType": "online",
+        "schedule": [
+          {
+            "days": [
+              "Tue",
+              "Thu",
+              "Fri"
+            ],
+            "startTime": "10:00",
+            "endTime": "13:00"
+          }
+        ]
+      },
+      {
+        "name": "Howrah Clinic",
+        "address": "12, Bata Nagar, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.510699017966363,
+        "lng": 88.25151713443084,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Sat"
+            ],
+            "startTime": "11:00",
+            "endTime": "15:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1586773868994-4995c311d7f8?w=800&q=80"
+      }
+    ],
+    "visibility": {
+      "showPhone": false,
+      "showFee": true,
+      "showExactAddress": false,
+      "showBio": true,
+      "showLanguages": true,
+      "showAvailabilityNote": false
+    },
+    "consultationFee": 900,
+    "bio": "Psychiatrist across Mogra, online Tue–Fri, and Mogra on Saturdays.",
+    "languages": [
+      "Bengali",
+      "Hindi",
+      "English"
+    ],
+    "qualifications": [
+      "MBBS",
+      "MD – Psychiatry"
+    ],
+    "verifiedAt": "2026-07-28T09:00:00Z",
+    "createdAt": "2026-07-24T08:00:00Z",
+    "updatedAt": "2026-08-02T12:00:00Z"
+  },
+  {
+    "id": "dr-010",
+    "name": "Dr. Subhash Malakar",
+    "photoUrl": "https://randomuser.me/api/portraits/men/61.jpg",
+    "phone": "+91-98300-11010",
+    "registrationNumber": "WBMC-2003-08765",
+    "stateMedicalCouncil": "WBMC",
+    "specialization": "General Physician",
+    "yearsOfExperience": 22,
+    "status": "verified",
+    "availabilityStatus": "available",
+    "practiceLocations": [
+      {
+        "name": "Malakar Polyclinic",
+        "address": "6, Kolkata Bankra Road, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.504716318730424,
+        "lng": 88.24270666563852,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Mon",
+              "Tue",
+              "Wed",
+              "Thu",
+              "Fri",
+              "Sat"
+            ],
+            "startTime": "08:00",
+            "endTime": "14:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1576091160399-217ba24ea032?w=800&q=80"
+      },
+      {
+        "name": "Madhyamgram Branch",
+        "address": "Near Sodepur Station, Maheshtala, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.51372804960156,
+        "lng": 88.24250564664545,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Sun"
+            ],
+            "startTime": "09:00",
+            "endTime": "12:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1538107418322-27aedce4d3f8?w=800&q=80"
+      }
+    ],
+    "visibility": {
+      "showPhone": true,
+      "showFee": true,
+      "showExactAddress": true,
+      "showBio": true,
+      "showLanguages": true,
+      "showAvailabilityNote": false
+    },
+    "consultationFee": 350,
+    "bio": "Family physician serving North 24 Parganas. Daily at Mogra, Sunday at Mogra.",
+    "languages": [
+      "Bengali",
+      "Hindi"
+    ],
+    "qualifications": [
+      "MBBS",
+      "MD – General Medicine"
+    ],
+    "verifiedAt": "2026-07-08T09:00:00Z",
+    "createdAt": "2026-07-01T08:00:00Z",
+    "updatedAt": "2026-08-02T07:00:00Z"
+  },
+  {
+    "id": "dr-007",
+    "name": "Dr. Tanmoy Ghosh",
+    "photoUrl": "https://randomuser.me/api/portraits/men/87.jpg",
+    "phone": "+91-98300-77007",
+    "registrationNumber": "WBMC-2020-31204",
+    "stateMedicalCouncil": "WBMC",
+    "specialization": "General Physician",
+    "yearsOfExperience": 4,
+    "status": "pending",
+    "availabilityStatus": "available",
+    "practiceLocations": [
+      {
+        "name": "Ghosh Medical",
+        "address": "14, NS Road, Mogra",
+        "locality": "Mogra",
+        "pincode": "700141",
+        "state": "West Bengal",
+        "lat": 22.505024764223617,
+        "lng": 88.25541740864877,
+        "consultationType": "in_person",
+        "schedule": [
+          {
+            "days": [
+              "Mon",
+              "Wed",
+              "Fri"
+            ],
+            "startTime": "09:00",
+            "endTime": "13:00"
+          }
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&q=80"
+      }
+    ],
+    "visibility": {
+      "showPhone": false,
+      "showFee": false,
+      "showExactAddress": false,
+      "showBio": false,
+      "showLanguages": false,
+      "showAvailabilityNote": false
+    },
+    "consultationFee": 300,
+    "bio": "",
+    "languages": [
+      "Bengali",
+      "Hindi"
+    ],
+    "qualifications": [
+      "MBBS"
+    ],
+    "createdAt": "2026-08-01T12:00:00Z",
+    "updatedAt": "2026-08-01T12:00:00Z"
+  }
+]
