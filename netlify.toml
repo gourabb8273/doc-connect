@@ -8,7 +8,7 @@
   NODE_VERSION = "20"
   # Next.js server bundles and pre-rendered HTML legitimately reference env vars
   SECRETS_SCAN_OMIT_PATHS = ".next/**,.netlify/**,env.example,scripts/**"
-  SECRETS_SCAN_OMIT_KEYS = "MONGODB_DB_NAME,CLOUDINARY_CLOUD_NAME,ADMIN_NAME"
+  SECRETS_SCAN_OMIT_KEYS = "MONGODB_DB_NAME,CLOUDINARY_CLOUD_NAME,ADMIN_NAME,ADMIN_USERNAME"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
