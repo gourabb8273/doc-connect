@@ -113,8 +113,8 @@ export function SearchForm({ variant = "hero" }: { variant?: "hero" | "inline" }
             : "flex flex-col gap-3"
         }
       >
-        <div className="flex flex-col sm:flex-row gap-2">
-          <div className="relative flex-1">
+        <div className="flex flex-col sm:flex-row gap-2 w-full">
+          <div className="relative w-full sm:flex-1 min-w-0">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-zinc-400 pointer-events-none" />
             <input
               type="text"
@@ -129,7 +129,7 @@ export function SearchForm({ variant = "hero" }: { variant?: "hero" | "inline" }
             />
           </div>
 
-          <div className="relative flex-1 sm:flex-none sm:w-52">
+          <div className="relative w-full sm:flex-none sm:w-52 min-w-0">
             <SlidersHorizontal className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
             <select value={spec} onChange={(e) => setSpec(e.target.value)} className={fieldClass}>
               {SPECIALIZATIONS.map((s) => (
@@ -142,8 +142,8 @@ export function SearchForm({ variant = "hero" }: { variant?: "hero" | "inline" }
         </div>
 
         {/* Row 2: day + time + search */}
-        <div className="flex flex-col sm:flex-row gap-2">
-          <div className="relative flex-1 sm:flex-none sm:w-40">
+        <div className="flex flex-col sm:flex-row gap-2 w-full">
+          <div className="relative w-full sm:flex-none sm:w-40">
             <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
             <select value={day} onChange={(e) => setDay(e.target.value)} className={fieldClass}>
               {DAYS.map((d) => (
@@ -154,7 +154,7 @@ export function SearchForm({ variant = "hero" }: { variant?: "hero" | "inline" }
             </select>
           </div>
 
-          <div className="relative flex-1 sm:flex-none sm:w-48">
+          <div className="relative w-full sm:flex-none sm:w-48">
             <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
             <select value={time} onChange={(e) => setTime(e.target.value)} className={fieldClass}>
               {TIMES.map((t) => (
@@ -169,8 +169,8 @@ export function SearchForm({ variant = "hero" }: { variant?: "hero" | "inline" }
             type="submit"
             className={
               isHero
-                ? "px-6 py-2.5 bg-brand text-white text-sm font-bold rounded-xl hover:bg-brand-dark shadow-md shadow-brand/20 transition-all sm:ml-auto"
-                : "px-6 py-3 bg-brand text-white text-sm font-bold rounded-xl hover:bg-brand-dark transition-colors sm:ml-auto"
+                ? "w-full sm:w-auto px-6 py-2.5 bg-brand text-white text-sm font-bold rounded-xl hover:bg-brand-dark shadow-md shadow-brand/20 transition-all sm:ml-auto"
+                : "w-full sm:w-auto px-6 py-3 bg-brand text-white text-sm font-bold rounded-xl hover:bg-brand-dark transition-colors sm:ml-auto"
             }
           >
             Search

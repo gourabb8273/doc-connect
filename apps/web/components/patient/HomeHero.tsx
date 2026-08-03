@@ -169,11 +169,11 @@ export function HomeHero({ availableNow }: HomeHeroProps) {
       <HeartConnectionBackdrop scrollY={y} progress={progress} />
 
       <div
-        className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-7 pr-28 sm:pr-6 transition-opacity duration-500"
+        className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-7 transition-opacity duration-500"
         style={{ opacity: heroFade }}
       >
         <div className="grid lg:grid-cols-[minmax(0,1fr)_9rem] gap-4 items-start">
-          <div className="max-w-lg">
+          <div className="max-w-lg lg:max-w-none">
             <div className="inline-flex items-center gap-2 bg-white/10 text-white/90 text-[11px] font-bold px-2.5 py-1 rounded-full mb-2.5 backdrop-blur-md border border-white/10">
               <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
               {availableNow} available now in Mogra
@@ -215,10 +215,10 @@ export function HomeHero({ availableNow }: HomeHeroProps) {
           </div>
         </div>
 
-        {/* Search */}
+        {/* Search — full width on mobile */}
         <div
           className={cn(
-            "relative z-10 max-w-3xl rounded-2xl p-3 sm:p-3.5 mt-4",
+            "relative z-10 w-full sm:max-w-3xl rounded-2xl p-3 sm:p-3.5 mt-4",
             "transition-all duration-500 shadow-2xl shadow-black/20 bg-white/[0.98]"
           )}
           style={{ transform: `translateY(${-searchLift}px)` }}
