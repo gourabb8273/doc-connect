@@ -28,7 +28,8 @@ import {
   type VisibilitySettings,
 } from "@/lib/visibility";
 import { VisibilityToggle } from "@/components/ui/VisibilityToggle";
-import { cn } from "@/lib/utils";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { MultiClinicStep } from "@/components/doctor/MultiClinicStep";
 import {
   clinicDraftToAppointmentRules,
@@ -46,6 +47,8 @@ import {
   loadOnboardingDraft,
   type DocField,
 } from "@/lib/onboarding-draft";
+
+function clx(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
 
 type DocFieldLocal = DocField;
 
@@ -96,7 +99,7 @@ function StepIndicator({ current }: { current: number }) {
           <div key={step.id} className="flex items-center flex-1 last:flex-none">
             <div className="flex flex-col items-center gap-1">
               <div
-                className={cn(
+                className={clx(
                   "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all",
                   done && "bg-brand text-white",
                   active && "bg-brand text-white ring-4 ring-brand/20",
@@ -106,7 +109,7 @@ function StepIndicator({ current }: { current: number }) {
                 {done ? <CheckCircle2 className="w-4 h-4" /> : step.id}
               </div>
               <span
-                className={cn(
+                className={clx(
                   "text-[10px] font-semibold hidden sm:block",
                   active ? "text-brand" : done ? "text-brand/80" : "text-zinc-400"
                 )}
@@ -116,7 +119,7 @@ function StepIndicator({ current }: { current: number }) {
             </div>
             {i < STEPS.length - 1 && (
               <div
-                className={cn(
+                className={clx(
                   "flex-1 h-0.5 mx-2 rounded-full transition-colors",
                   current > step.id ? "bg-brand/40" : "bg-zinc-100"
                 )}
@@ -155,7 +158,7 @@ function Step1({
               key={value}
               type="button"
               onClick={() => onChange("title", value)}
-              className={cn(
+              className={clx(
                 "py-2.5 text-sm rounded-xl border font-semibold transition-colors",
                 title === value
                   ? "bg-brand text-white border-brand"
