@@ -158,7 +158,7 @@ export default function AdminLoginPage() {
             </form>
 
             <p className="text-[11px] text-zinc-400 mt-6 text-center leading-relaxed">
-              Default dev login: admin / admin123 (run npm run db:seed-admin)
+              Use the admin credentials configured in your environment.
             </p>
           </div>
         </div>

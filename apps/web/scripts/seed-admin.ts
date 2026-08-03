@@ -18,9 +18,14 @@ async function main() {
     process.exit(1);
   }
 
-  const username = process.env.ADMIN_USERNAME ?? "admin";
-  const password = process.env.ADMIN_PASSWORD ?? "admin123";
-  const name = process.env.ADMIN_NAME ?? "Platform Admin";
+  const username = process.env.ADMIN_USERNAME;
+  const password = process.env.ADMIN_PASSWORD;
+  const name = process.env.ADMIN_NAME ?? "Admin";
+
+  if (!username || !password) {
+    console.error("Set ADMIN_USERNAME and ADMIN_PASSWORD in .env.local before seeding.");
+    process.exit(1);
+  }
 
   await getDb();
   await ensureIndexes();

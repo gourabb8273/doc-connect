@@ -1,7 +1,7 @@
 import { MongoClient, type Db } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB_NAME ?? "find-near-doctor-dev";
+const dbName = process.env.MONGODB_DB_NAME ?? "";
 
 declare global {
   // eslint-disable-next-line no-var
