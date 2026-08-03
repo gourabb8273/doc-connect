@@ -60,7 +60,7 @@ export async function uploadFile(
   }
 
   if ("url" in config) {
-    cloudinary.config(config.url);
+    cloudinary.config({ url: config.url });
   } else {
     cloudinary.config(config);
   }

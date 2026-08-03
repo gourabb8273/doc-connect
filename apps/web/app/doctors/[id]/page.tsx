@@ -20,6 +20,7 @@ import { formatFee } from "@/lib/utils";
 import { getAvailabilityLabel, isSeatingToday } from "@/lib/schedule";
 import { getDoctorDisplayName } from "@/lib/doctor-name";
 import { CoverBanner } from "@/components/patient/CoverBanner";
+import { getDoctorCover } from "@/lib/clinic-images";
 
 interface Props {
   params: Promise<{ id: string }>;
