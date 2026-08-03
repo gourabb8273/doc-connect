@@ -7,9 +7,11 @@ import { CoverBanner } from "@/components/patient/CoverBanner";
 import type { Doctor } from "@/lib/types";
 import { getAvailabilityLabel, isSeatingToday, getSessionsForDay, formatTimeRange } from "@/lib/schedule";
 import { getDoctorCover } from "@/lib/clinic-images";
+import { getDoctorDisplayName } from "@/lib/doctor-name";
 import { formatFee, cn } from "@/lib/utils";
 
 export function DoctorCard({ doctor }: { doctor: Doctor }) {
+  const displayName = getDoctorDisplayName(doctor);
   const clinicCount = doctor.practiceLocations.length;
   const seatingToday = isSeatingToday(doctor);
   const availLabel = getAvailabilityLabel(doctor);
@@ -49,7 +51,7 @@ export function DoctorCard({ doctor }: { doctor: Doctor }) {
               <div className="w-14 h-14 rounded-2xl overflow-hidden ring-[3px] ring-white/90 shadow-xl">
                 <Image
                   src={doctor.photoUrl}
-                  alt={doctor.name}
+                  alt={displayName}
                   width={56}
                   height={56}
                   className="object-cover w-full h-full"
@@ -62,7 +64,7 @@ export function DoctorCard({ doctor }: { doctor: Doctor }) {
             </div>
             <div className="min-w-0 pb-0.5">
               <h3 className="font-bold text-white text-[15px] leading-tight truncate drop-shadow-sm">
-                {doctor.name}
+                {displayName}
               </h3>
               <p className="text-white/80 text-xs font-medium truncate">
                 {doctor.specialization}

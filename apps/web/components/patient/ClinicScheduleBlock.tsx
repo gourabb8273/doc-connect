@@ -5,6 +5,7 @@ import type { PracticeLocation } from "@/lib/types";
 import { formatDaysShort, formatTimeRange } from "@/lib/schedule";
 import { getClinicCover } from "@/lib/clinic-images";
 import { cn } from "@/lib/utils";
+import { AppointmentRulesBlock } from "@/components/patient/AppointmentRulesBlock";
 
 interface ClinicScheduleBlockProps {
   location: PracticeLocation;
@@ -110,6 +111,12 @@ export function ClinicScheduleBlock({
           </div>
         )}
       </div>
+
+      {location.appointmentRules && (
+        <div className="px-5 pb-5 -mt-2">
+          <AppointmentRulesBlock rules={location.appointmentRules} compact />
+        </div>
+      )}
     </div>
   );
 }

@@ -12,6 +12,7 @@ import {
   ClipboardList,
 } from "lucide-react";
 import { setRole } from "@/lib/auth";
+import { apiPost } from "@/lib/api/client";
 
 const STEPS = [
   {
@@ -33,24 +34,24 @@ const STEPS = [
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [pass, setPass] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
-    setTimeout(() => {
+    try {
+      await apiPost("/api/auth/admin/login", { username, password: pass });
+      setRole("admin");
+      router.push("/admin/verifications");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Invalid username or password.");
+    } finally {
       setLoading(false);
-      if (email === "admin@findmydoc.in" && pass === "admin123") {
-        setRole("admin");
-        router.push("/admin/verifications");
-      } else {
-        setError("Invalid email or password.");
-      }
-    }, 800);
+    }
   }
 
   return (
@@ -65,7 +66,6 @@ export default function AdminLoginPage() {
         </Link>
 
         <div className="grid lg:grid-cols-2 gap-10 items-start">
-          {/* Left: what admin does */}
           <div>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-11 h-11 bg-slate-900 rounded-2xl flex items-center justify-center">
@@ -101,24 +101,24 @@ export default function AdminLoginPage() {
             </div>
           </div>
 
-          {/* Right: login form */}
           <div className="bg-white rounded-2xl border border-zinc-100 shadow-sm p-6 sm:p-8">
             <h2 className="text-lg font-bold text-zinc-900 mb-1">Sign in</h2>
             <p className="text-xs text-zinc-500 mb-6">
-              Use your FindMyDoc admin credentials
+              Use your Find Near Doctor admin credentials
             </p>
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-zinc-700 mb-1.5">
-                  Email
+                  Username
                 </label>
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@findmydoc.in"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="admin"
                   required
+                  autoComplete="username"
                   className="w-full px-4 py-3 text-sm text-zinc-900 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent"
                 />
               </div>
@@ -132,6 +132,7 @@ export default function AdminLoginPage() {
                   onChange={(e) => setPass(e.target.value)}
                   placeholder="••••••••"
                   required
+                  autoComplete="current-password"
                   className="w-full px-4 py-3 text-sm text-zinc-900 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent"
                 />
               </div>
@@ -157,12 +158,7 @@ export default function AdminLoginPage() {
             </form>
 
             <p className="text-[11px] text-zinc-400 mt-6 text-center leading-relaxed">
-              Demo: admin@findmydoc.in / admin123
-              <br />
-              Need access? Write to{" "}
-              <a href="mailto:help@findmydoc.in" className="text-brand hover:underline">
-                help@findmydoc.in
-              </a>
+              Default dev login: admin / admin123 (run npm run db:seed-admin)
             </p>
           </div>
         </div>

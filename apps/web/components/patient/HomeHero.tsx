@@ -42,10 +42,38 @@ function HeartConnectionBackdrop({
 
   return (
     <div
-      className="absolute inset-0 z-[1] pointer-events-none select-none overflow-hidden"
+      className="absolute inset-0 z-[1] pointer-events-none select-none"
       aria-hidden
     >
+      {/* Mobile: top-right, fully inside viewport */}
       <div
+        className="absolute sm:hidden hero-heart-float"
+        style={{
+          top: "3.5rem",
+          right: "-1.5rem",
+          width: "11rem",
+          height: "11rem",
+          opacity: Math.max(0.55 - progress * 0.2, 0.38),
+        }}
+      >
+        <div
+          className="hero-icon-glow absolute inset-0 rounded-full"
+          style={{
+            background: "radial-gradient(circle, rgba(37,99,235,0.7) 0%, transparent 70%)",
+            filter: "blur(20px)",
+          }}
+        />
+        <div className="absolute inset-0 rounded-full border border-white/20 hero-ring-expand origin-center" />
+        <div
+          className="absolute inset-[18%] rounded-full flex items-center justify-center border border-white/25 bg-white/10 backdrop-blur-sm shadow-[0_0_40px_rgba(37,99,235,0.45)]"
+        >
+          <HeartHandshake className="w-[58%] h-[58%] text-white/70" strokeWidth={1.2} />
+        </div>
+      </div>
+
+      {/* Desktop: large background on the right */}
+      <div
+        className="absolute hidden sm:block"
         style={{
           top: "50%",
           right: "3%",
@@ -54,54 +82,45 @@ function HeartConnectionBackdrop({
           transform: `translateY(calc(-50% + ${drift}px)) rotate(${rotate}deg) scale(${scale})`,
           opacity: Math.max(0.62 - progress * 0.22, 0.42),
         }}
-        className="absolute"
       >
         <div className="relative w-full h-full hero-heart-float">
-        {/* Blue glow core */}
-        <div
-          className="hero-icon-glow absolute rounded-full"
-          style={{
-            inset: "10%",
-            background: "radial-gradient(circle, rgba(37,99,235,0.65) 0%, transparent 70%)",
-            filter: "blur(24px)",
-          }}
-        />
-        {/* Orange accent glow */}
-        <div
-          className="hero-heart-float-delay absolute rounded-full"
-          style={{
-            top: "5%",
-            right: "0%",
-            width: "55%",
-            height: "55%",
-            background: "radial-gradient(circle, rgba(249,115,22,0.35) 0%, transparent 70%)",
-            filter: "blur(20px)",
-          }}
-        />
-
-        {/* Expanding connection rings */}
-        <div
-          className="absolute rounded-full border border-white/20 hero-ring-expand origin-center"
-          style={{ inset: "0" }}
-        />
-        <div
-          className="absolute rounded-full border border-brand/40 hero-ring-expand-delay origin-center"
-          style={{ inset: "8%" }}
-        />
-        <div
-          className="absolute rounded-full border border-white/10"
-          style={{ inset: "18%" }}
-        />
-
-        {/* Glass disc + icon */}
-        <div
-          className="absolute inset-[22%] rounded-full flex items-center justify-center border border-white/20 bg-white/[0.08] backdrop-blur-sm shadow-[0_0_60px_rgba(37,99,235,0.4)]"
-        >
-          <HeartHandshake
-            className="w-[55%] h-[55%] text-white/65 drop-shadow-[0_0_28px_rgba(255,255,255,0.5)]"
-            strokeWidth={1.1}
+          <div
+            className="hero-icon-glow absolute rounded-full"
+            style={{
+              inset: "10%",
+              background: "radial-gradient(circle, rgba(37,99,235,0.65) 0%, transparent 70%)",
+              filter: "blur(24px)",
+            }}
           />
-        </div>
+          <div
+            className="hero-heart-float-delay absolute rounded-full"
+            style={{
+              top: "5%",
+              right: "0%",
+              width: "55%",
+              height: "55%",
+              background: "radial-gradient(circle, rgba(249,115,22,0.35) 0%, transparent 70%)",
+              filter: "blur(20px)",
+            }}
+          />
+          <div
+            className="absolute rounded-full border border-white/20 hero-ring-expand origin-center"
+            style={{ inset: "0" }}
+          />
+          <div
+            className="absolute rounded-full border border-brand/40 hero-ring-expand-delay origin-center"
+            style={{ inset: "8%" }}
+          />
+          <div
+            className="absolute rounded-full border border-white/10"
+            style={{ inset: "18%" }}
+          />
+          <div className="absolute inset-[22%] rounded-full flex items-center justify-center border border-white/20 bg-white/[0.08] backdrop-blur-sm shadow-[0_0_60px_rgba(37,99,235,0.4)]">
+            <HeartHandshake
+              className="w-[55%] h-[55%] text-white/65 drop-shadow-[0_0_28px_rgba(255,255,255,0.5)]"
+              strokeWidth={1.1}
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -113,40 +132,44 @@ interface HomeHeroProps {
 }
 
 export function HomeHero({ availableNow }: HomeHeroProps) {
+  const [mounted, setMounted] = useState(false);
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
+    setMounted(true);
     const onScroll = () => setScrollY(window.scrollY);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const progress = Math.min(scrollY / 280, 1);
+  // Avoid hydration mismatch: server and first client paint use 0 until mounted
+  const y = mounted ? scrollY : 0;
+  const progress = Math.min(y / 280, 1);
   const heroFade = 1 - progress * 0.35;
-  const searchLift = Math.min(scrollY * 0.05, 12);
+  const searchLift = Math.min(y * 0.05, 12);
 
   return (
-    <section className="mesh-dark text-white relative overflow-hidden">
+    <section className="mesh-dark text-white relative overflow-x-clip min-h-[22rem] sm:min-h-0">
       <div
         className="absolute inset-0 transition-opacity duration-300 pointer-events-none z-0"
-        style={{ opacity: 0.35 + progress * 0.25 }}
+        style={{ opacity: 0.45 + progress * 0.2 }}
         aria-hidden
       >
         <div
-          className="absolute top-16 left-8 w-72 h-72 bg-brand/35 rounded-full blur-[100px]"
-          style={{ transform: `translateY(${scrollY * 0.12}px)` }}
+          className="absolute left-1/2 sm:left-8 w-56 h-56 sm:w-72 sm:h-72 bg-brand/40 rounded-full blur-[90px] -translate-x-1/2 sm:translate-x-0"
+          style={{ top: `calc(2.5rem + ${y * 0.12}px)` }}
         />
         <div
-          className="absolute bottom-0 right-8 w-96 h-96 bg-accent/25 rounded-full blur-[120px]"
-          style={{ transform: `translateY(${-scrollY * 0.08}px)` }}
+          className="absolute bottom-0 right-0 sm:right-8 w-64 h-64 sm:w-96 sm:h-96 bg-accent/30 rounded-full blur-[100px]"
+          style={{ transform: `translateY(${-y * 0.08}px)` }}
         />
       </div>
 
-      <HeartConnectionBackdrop scrollY={scrollY} progress={progress} />
+      <HeartConnectionBackdrop scrollY={y} progress={progress} />
 
       <div
-        className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-7 transition-opacity duration-500"
+        className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-7 pr-28 sm:pr-6 transition-opacity duration-500"
         style={{ opacity: heroFade }}
       >
         <div className="grid lg:grid-cols-[minmax(0,1fr)_9rem] gap-4 items-start">
@@ -156,20 +179,20 @@ export function HomeHero({ availableNow }: HomeHeroProps) {
               {availableNow} available now in Mogra
             </div>
 
-            <h1 className="text-[1.6rem] sm:text-[2.35rem] font-extrabold tracking-tight leading-[1.15] mb-2">
-              Find a verified doctor
+            <h1 className="text-[1.55rem] sm:text-[2.35rem] font-extrabold tracking-tight leading-[1.15] mb-2">
+              Live doctors near you
               <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-orange-300">
-                before you step out.
+                on a verified network.
               </span>
             </h1>
 
             <p className="text-zinc-200 text-sm sm:text-[0.9375rem] leading-relaxed max-w-md">
-              Real time updates on availability, day, time and location — direct from the doctor. Verified.
+              Real time status, day, and timings from the doctor. Know before you go.
             </p>
 
             {/* Mobile USP chips */}
             <div className="flex flex-wrap gap-1.5 mt-2.5 lg:hidden">
-              {USP_ITEMS.map(({ icon: Icon, label }) => (
+              {USP_ITEMS.slice(0, 3).map(({ icon: Icon, label }) => (
                 <span
                   key={label}
                   className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 border border-white/15"

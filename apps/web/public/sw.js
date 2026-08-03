@@ -1,4 +1,4 @@
-const CACHE = 'fnd-v1';
+const CACHE = 'fnd-v2';
 
 // Core shell to cache on install
 const SHELL = [

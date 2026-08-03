@@ -3,8 +3,7 @@ import Link from "next/link";
 import { SearchForm } from "@/components/patient/SearchForm";
 import { DoctorCard } from "@/components/patient/DoctorCard";
 import { SearchX, Home, RotateCcw } from "lucide-react";
-import doctorsData from "@/data/doctors.json";
-import type { Doctor } from "@/lib/types";
+import { getAllDoctors } from "@/lib/data/doctors";
 import {
   filterDoctors,
   sortDoctors,
@@ -26,7 +25,7 @@ interface Props {
 export default async function SearchPage({ searchParams }: Props) {
   const params = await searchParams;
   const filters = parseSearchFilters(params);
-  const allDoctors = doctorsData as Doctor[];
+  const allDoctors = await getAllDoctors();
   const results = sortDoctors(filterDoctors(allDoctors, filters), filters);
   const summary = formatSearchSummary(filters);
   const hasFilters = Boolean(summary);
@@ -73,7 +72,7 @@ export default async function SearchPage({ searchParams }: Props) {
           </h3>
           <p className="text-sm text-slate-500 max-w-xs mb-7">
             {hasFilters
-              ? "Try adjusting your filters — a nearby pincode, different day, or wider time slot."
+              ? "Try adjusting your filters. Use a nearby pincode, a different day, or a wider time slot."
               : "No doctors available right now. Try searching by pincode, specialization, or day."}
           </p>
 

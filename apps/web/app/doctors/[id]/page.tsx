@@ -15,11 +15,10 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
 import { ClinicScheduleBlock } from "@/components/patient/ClinicScheduleBlock";
 import { SchedulePreview } from "@/components/patient/SchedulePreview";
-import doctorsData from "@/data/doctors.json";
-import type { Doctor } from "@/lib/types";
+import { getDoctorById } from "@/lib/data/doctors";
 import { formatFee } from "@/lib/utils";
 import { getAvailabilityLabel, isSeatingToday } from "@/lib/schedule";
-import { getDoctorCover } from "@/lib/clinic-images";
+import { getDoctorDisplayName } from "@/lib/doctor-name";
 import { CoverBanner } from "@/components/patient/CoverBanner";
 
 interface Props {
@@ -28,7 +27,7 @@ interface Props {
 
 export default async function DoctorProfilePage({ params }: Props) {
   const { id } = await params;
-  const doctor = (doctorsData as Doctor[]).find((d) => d.id === id);
+  const doctor = await getDoctorById(id);
 
   if (!doctor || doctor.status !== "verified") notFound();
 
@@ -38,6 +37,8 @@ export default async function DoctorProfilePage({ params }: Props) {
   const clinicCount = doctor.practiceLocations.filter(
     (l) => l.consultationType !== "online"
   ).length;
+
+  const displayName = getDoctorDisplayName(doctor);
 
   return (
     <div className="min-h-screen bg-zinc-100">
@@ -74,7 +75,7 @@ export default async function DoctorProfilePage({ params }: Props) {
               <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-[20px] overflow-hidden ring-4 ring-white bg-white shadow-xl shrink-0 -mt-16 sm:-mt-20">
                 <Image
                   src={doctor.photoUrl}
-                  alt={doctor.name}
+                  alt={displayName}
                   width={112}
                   height={112}
                   className="object-cover w-full h-full"
@@ -84,7 +85,7 @@ export default async function DoctorProfilePage({ params }: Props) {
               <div className="flex-1 min-w-0 pt-1">
                 <div className="flex flex-wrap items-center gap-2 mb-1">
                   <h1 className="text-xl sm:text-2xl font-extrabold text-zinc-900 tracking-tight">
-                    {doctor.name}
+                    {displayName}
                   </h1>
                   <VerifiedBadge />
                 </div>
@@ -156,6 +157,7 @@ export default async function DoctorProfilePage({ params }: Props) {
                 </div>
               )}
             </div>
+
 
             {/* Clinics with photos */}
             <div>

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Stethoscope, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
 import { setRole } from "@/lib/auth";
+import { apiPost } from "@/lib/api/client";
 
 type Step = "phone" | "otp";
 
@@ -14,8 +15,22 @@ export default function DoctorLoginPage() {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [otpWarning, setOtpWarning] = useState("");
 
-  function handleSendOtp(e: React.FormEvent) {
+  async function sendOtpToPhone() {
+    const fullPhone = `+91${phone}`;
+    const res = await apiPost<{ ok: boolean; warning?: string }>(
+      "/api/auth/doctor/otp/send",
+      {
+        phone: fullPhone,
+        purpose: "doctor_signup",
+      }
+    );
+    setOtpWarning(res.warning ?? "");
+  }
+
+  async function handleSendOtp(e: React.FormEvent) {
     e.preventDefault();
     if (phone.replace(/\D/g, "").length < 10) {
       setError("Enter a valid 10-digit phone number");
@@ -23,14 +38,40 @@ export default function DoctorLoginPage() {
     }
     setError("");
     setLoading(true);
-    // Simulate OTP send
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await sendOtpToPhone();
       setStep("otp");
-    }, 1200);
+      setResendCooldown(30);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not send OTP");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleVerifyOtp(e: React.FormEvent) {
+  async function handleResendOtp() {
+    if (resendCooldown > 0 || loading) return;
+    setError("");
+    setLoading(true);
+    try {
+      await sendOtpToPhone();
+      setResendCooldown(30);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not resend OTP");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const t = setInterval(() => {
+      setResendCooldown((s) => (s <= 1 ? 0 : s - 1));
+    }, 1000);
+    return () => clearInterval(t);
+  }, [resendCooldown]);
+
+  async function handleVerifyOtp(e: React.FormEvent) {
     e.preventDefault();
     if (otp.length !== 6) {
       setError("Enter the 6-digit OTP");
@@ -38,22 +79,40 @@ export default function DoctorLoginPage() {
     }
     setError("");
     setLoading(true);
-    // Simulate verification — for demo treat 123456 as valid
-    setTimeout(() => {
-      setLoading(false);
-      if (otp === "123456") {
-        setRole("doctor");
+    try {
+      const fullPhone = `+91${phone}`;
+      const res = await apiPost<{
+        ok: boolean;
+        doctorId: string | null;
+        hasProfile: boolean;
+        status: string | null;
+      }>("/api/auth/doctor/otp/verify", {
+        phone: fullPhone,
+        code: otp,
+        purpose: "doctor_signup",
+      });
+
+      setRole("doctor");
+
+      if (res.hasProfile && res.status === "verified") {
+        router.push("/doctor/dashboard");
+      } else if (res.hasProfile && res.status === "pending") {
+        router.push("/doctor/dashboard");
+      } else if (res.hasProfile && res.status === "rejected") {
         router.push("/doctor/onboarding");
       } else {
-        setError("Incorrect OTP. Use 123456 in demo mode.");
+        router.push("/doctor/onboarding");
       }
-    }, 1200);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Incorrect or expired OTP");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
-        {/* Brand */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
             <Stethoscope className="w-6 h-6 text-white" />
@@ -67,7 +126,6 @@ export default function DoctorLoginPage() {
           </p>
         </div>
 
-        {/* Trust line */}
         <div className="flex items-center gap-2 justify-center mb-8">
           <ShieldCheck className="w-4 h-4 text-indigo-600" />
           <span className="text-xs text-slate-500">
@@ -75,7 +133,6 @@ export default function DoctorLoginPage() {
           </span>
         </div>
 
-        {/* Form card */}
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
           {step === "phone" ? (
             <form onSubmit={handleSendOtp} className="space-y-4">
@@ -123,14 +180,26 @@ export default function DoctorLoginPage() {
                   </label>
                   <button
                     type="button"
-                    onClick={() => { setStep("phone"); setOtp(""); setError(""); }}
+                    onClick={() => {
+                      setStep("phone");
+                      setOtp("");
+                      setError("");
+                    }}
                     className="text-xs text-indigo-600 hover:text-indigo-700"
                   >
                     Change number
                   </button>
                 </div>
-                <p className="text-xs text-slate-400 mb-3">
-                  Sent to +91-{phone} (demo: use 123456)
+                <p className="text-xs text-slate-400 mb-2">
+                  Sent to +91-{phone}. SMS can take up to 30 seconds.
+                </p>
+                {otpWarning && (
+                  <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-2 mb-3 leading-relaxed">
+                    {otpWarning}
+                  </p>
+                )}
+                <p className="text-xs text-amber-700/90 bg-amber-50 border border-amber-100 rounded-lg px-2.5 py-2 mb-3 leading-relaxed">
+                  No SMS? Check spam, then MSG91 dashboard → <strong>Logs</strong> (delivery may fail if wallet is empty or DLT template is not set). Top up wallet and map your OTP widget SMS template.
                 </p>
                 <input
                   type="text"
@@ -142,6 +211,14 @@ export default function DoctorLoginPage() {
                   className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-center text-lg tracking-widest font-mono"
                 />
                 {error && <p className="text-xs text-red-500 mt-1.5">{error}</p>}
+                <button
+                  type="button"
+                  onClick={handleResendOtp}
+                  disabled={loading || resendCooldown > 0}
+                  className="mt-2 text-xs text-indigo-600 hover:text-indigo-700 disabled:text-slate-400"
+                >
+                  {resendCooldown > 0 ? `Resend OTP in ${resendCooldown}s` : "Resend OTP"}
+                </button>
               </div>
 
               <button

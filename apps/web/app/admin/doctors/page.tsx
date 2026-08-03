@@ -4,12 +4,11 @@ import { ArrowLeft, Search } from "lucide-react";
 import { AuthGuard } from "@/components/auth/AuthGuard";
 import { VerifiedBadge } from "@/components/ui/VerifiedBadge";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import doctorsData from "@/data/doctors.json";
+import { getVerifiedDoctors } from "@/lib/data/doctors";
+import { getDoctorDisplayName } from "@/lib/doctor-name";
 import type { Doctor } from "@/lib/types";
 
-function AdminDoctorsContent() {
-  const verified = (doctorsData as Doctor[]).filter((d) => d.status === "verified");
-
+function AdminDoctorsContent({ verified }: { verified: Doctor[] }) {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex items-center gap-3 mb-8">
@@ -18,11 +17,10 @@ function AdminDoctorsContent() {
         </Link>
         <div>
           <h1 className="text-2xl font-bold text-slate-900">All Verified Doctors</h1>
-          <p className="text-sm text-slate-500">{verified.length} live on FindMyDoc</p>
+          <p className="text-sm text-slate-500">{verified.length} live on Find Near Doctor</p>
         </div>
       </div>
 
-      {/* Search (UI only) */}
       <div className="relative mb-6">
         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
         <input
@@ -49,14 +47,16 @@ function AdminDoctorsContent() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
-            {verified.map((doctor) => (
+            {verified.map((doctor) => {
+              const displayName = getDoctorDisplayName(doctor);
+              return (
               <tr key={doctor.id} className="hover:bg-slate-50/50 transition-colors">
                 <td className="px-5 py-4">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-lg overflow-hidden ring-1 ring-slate-100 shrink-0">
                       <Image
                         src={doctor.photoUrl}
-                        alt={doctor.name}
+                        alt={displayName}
                         width={36}
                         height={36}
                         className="object-cover"
@@ -65,7 +65,7 @@ function AdminDoctorsContent() {
                     </div>
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <span className="font-semibold text-slate-900">{doctor.name}</span>
+                        <span className="font-semibold text-slate-900">{displayName}</span>
                         <VerifiedBadge />
                       </div>
                       <p className="text-xs text-slate-400">
@@ -94,7 +94,8 @@ function AdminDoctorsContent() {
                   </Link>
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -102,10 +103,12 @@ function AdminDoctorsContent() {
   );
 }
 
-export default function AdminDoctorsPage() {
+export default async function AdminDoctorsPage() {
+  const verified = await getVerifiedDoctors();
+
   return (
     <AuthGuard required="admin" redirectTo="/admin/login">
-      <AdminDoctorsContent />
+      <AdminDoctorsContent verified={verified} />
     </AuthGuard>
   );
 }

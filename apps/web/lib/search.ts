@@ -1,4 +1,5 @@
 import type { DayOfWeek, Doctor } from "./types";
+import { getDoctorDisplayName } from "@/lib/doctor-name";
 import { getSessionsForDay, getTodayDay } from "./schedule";
 
 export type TimePeriod = "morning" | "afternoon" | "evening";
@@ -85,6 +86,7 @@ function matchesQuery(doctor: Doctor, q: string): boolean {
         l.state.toLowerCase().includes(lower) ||
         l.address.toLowerCase().includes(lower)
     ) ||
+    getDoctorDisplayName(doctor).toLowerCase().includes(lower) ||
     doctor.name.toLowerCase().includes(lower) ||
     doctor.specialization.toLowerCase().includes(lower)
   );

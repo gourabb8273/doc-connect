@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   User,
@@ -13,19 +13,58 @@ import {
   CheckCircle2,
   Loader2,
   Info,
+  AlertTriangle,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import {
+  DOCTOR_TITLE_OPTIONS,
+  formatDoctorDisplayName,
+  normalizeBareName,
+  type DoctorTitle,
+} from "@/lib/doctor-name";
 import {
   DEFAULT_VISIBILITY,
   buildRegistrationNumber,
+  resolveSpecialization,
   type VisibilitySettings,
 } from "@/lib/visibility";
 import { VisibilityToggle } from "@/components/ui/VisibilityToggle";
+import { cn } from "@/lib/utils";
+import { MultiClinicStep } from "@/components/doctor/MultiClinicStep";
+import {
+  clinicDraftToAppointmentRules,
+  isClinicDraftValid,
+  draftFromPracticeLocation,
+  type ClinicDraft,
+} from "@/lib/clinic-draft";
+import { apiGet, apiPost, mapConsultType, uploadFile } from "@/lib/api/client";
+import type { DocumentType } from "@/lib/types";
+import { useOnboardingDraft } from "@/hooks/useOnboardingDraft";
+import {
+  fileToStoredDraft,
+  storedDraftToFile,
+  dataUrlToFile,
+  loadOnboardingDraft,
+  type DocField,
+} from "@/lib/onboarding-draft";
+
+type DocFieldLocal = DocField;
+
+const DOC_FIELDS: {
+  key: DocFieldLocal;
+  label: string;
+  hint: string;
+  required: boolean;
+}[] = [
+  { key: "photo", label: "Profile photo *", hint: "Clear face photo, mandatory for trust", required: true },
+  { key: "registration_cert", label: "Registration certificate *", hint: "PDF or image of council registration", required: true },
+  { key: "degree", label: "Degree certificate", hint: "MBBS/MD or equivalent", required: false },
+  { key: "govt_id", label: "Govt. ID (Aadhaar / PAN)", hint: "Optional, helps verification", required: false },
+];
 
 const STEPS = [
   { id: 1, label: "Basic Info", icon: User },
   { id: 2, label: "Documents", icon: FileText },
-  { id: 3, label: "Location", icon: MapPin },
+  { id: 3, label: "Clinics", icon: MapPin },
   { id: 4, label: "Consent", icon: CheckSquare },
 ];
 
@@ -98,6 +137,9 @@ function Step1({
   onChange: (k: string, v: string) => void;
 }) {
   const council = data.council ?? "WBMC";
+  const title = (data.title as DoctorTitle) || "dr";
+  const bareName = normalizeBareName(data.name ?? "");
+  const namePreview = bareName ? formatDoctorDisplayName(title, bareName) : "";
   const preview =
     data.regYear && data.regSerial
       ? buildRegistrationNumber(council, data.regYear, data.regSerial)
@@ -106,13 +148,40 @@ function Step1({
   return (
     <div className="space-y-4">
       <div>
-        <label className="label">Full name *</label>
+        <label className="label">Title *</label>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {DOCTOR_TITLE_OPTIONS.map(({ value, label }) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => onChange("title", value)}
+              className={cn(
+                "py-2.5 text-sm rounded-xl border font-semibold transition-colors",
+                title === value
+                  ? "bg-brand text-white border-brand"
+                  : "bg-white text-zinc-600 border-zinc-200 hover:border-brand/30"
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="label">Your name *</label>
         <input
           className="input"
-          placeholder="Dr. Firstname Lastname"
+          placeholder="Ratul Roy"
           value={data.name ?? ""}
           onChange={(e) => onChange("name", e.target.value)}
         />
+        <p className="text-xs text-zinc-400 mt-1">Enter name without title — we add Dr./Prof. from your choice above.</p>
+        {namePreview && (
+          <p className="text-xs font-semibold text-brand mt-2">
+            Shown to patients as: <span className="font-mono">{namePreview}</span>
+          </p>
+        )}
       </div>
 
       <div>
@@ -220,165 +289,57 @@ function Step1({
   );
 }
 
-function Step2() {
-  return (
-    <div className="space-y-5">
-      {[
-        { label: "Profile photo *", hint: "Clear face photo — mandatory for trust" },
-        { label: "Registration certificate *", hint: "PDF or image of your council registration" },
-        { label: "Degree certificate", hint: "MBBS/MD or equivalent" },
-        { label: "Govt. ID (Aadhaar / PAN)", hint: "Optional — helps verification" },
-      ].map(({ label, hint }) => (
-        <div key={label}>
-          <label className="label">{label}</label>
-          <p className="text-xs text-zinc-400 mb-2">{hint}</p>
-          <label className="flex items-center justify-center gap-2 border-2 border-dashed border-zinc-200 rounded-xl p-5 cursor-pointer hover:border-brand/40 hover:bg-brand-light/30 transition-colors">
-            <Upload className="w-4 h-4 text-zinc-400" />
-            <span className="text-sm text-zinc-500">Click to upload or take photo</span>
-            <input type="file" accept="image/*,application/pdf" className="hidden" />
-          </label>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function Step3({
-  data,
-  onChange,
-  clinicCoverPreview,
-  onClinicCoverChange,
+function Step2({
+  docFiles,
+  onDocChange,
 }: {
-  data: Record<string, string>;
-  onChange: (k: string, v: string) => void;
-  clinicCoverPreview: string | null;
-  onClinicCoverChange: (file: File | null, preview: string | null) => void;
+  docFiles: Partial<Record<DocFieldLocal, { name: string }>>;
+  onDocChange: (key: DocFieldLocal, file: File | null) => void;
 }) {
   return (
-    <div className="space-y-4">
-      {/* Clinic cover photo */}
-      <div className="rounded-xl border border-zinc-200 overflow-hidden">
-        <div className="px-4 py-3 bg-zinc-50 border-b border-zinc-100">
-          <p className="text-sm font-semibold text-zinc-800">Clinic cover photo</p>
-          <p className="text-xs text-zinc-500 mt-0.5">
-            Optional — helps patients recognise your clinic on search and your profile.
-            If skipped, a themed placeholder is used based on your specialization.
-          </p>
-        </div>
-        <div className="p-4">
-          {clinicCoverPreview ? (
-            <div className="relative h-36 rounded-xl overflow-hidden mb-3 ring-2 ring-brand/20">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={clinicCoverPreview}
-                alt="Clinic cover preview"
-                className="w-full h-full object-cover"
-              />
-              <button
-                type="button"
-                onClick={() => onClinicCoverChange(null, null)}
-                className="absolute top-2 right-2 text-xs font-bold px-2.5 py-1 rounded-lg bg-black/50 text-white hover:bg-black/70"
-              >
-                Remove
-              </button>
-            </div>
-          ) : (
-            <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-zinc-200 rounded-xl p-6 cursor-pointer hover:border-brand/40 hover:bg-brand-light/20 transition-colors mb-1">
-              <Upload className="w-5 h-5 text-zinc-400" />
-              <span className="text-sm font-medium text-zinc-600">
-                Upload clinic or hospital photo
-              </span>
-              <span className="text-xs text-zinc-400">Front view, waiting area, or signboard</span>
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    onClinicCoverChange(file, URL.createObjectURL(file));
-                  }
-                }}
-              />
-            </label>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <label className="label">Clinic / Hospital name *</label>
-        <input
-          className="input"
-          placeholder="e.g. Sen Clinic"
-          value={data.clinicName ?? ""}
-          onChange={(e) => onChange("clinicName", e.target.value)}
-        />
-      </div>
-      <div>
-        <label className="label">Full address *</label>
-        <textarea
-          className="input resize-none"
-          rows={2}
-          placeholder="Street address"
-          value={data.address ?? ""}
-          onChange={(e) => onChange("address", e.target.value)}
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="label">Locality *</label>
-          <input
-            className="input"
-            placeholder="e.g. Mogra"
-            value={data.locality ?? ""}
-            onChange={(e) => onChange("locality", e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="label">Pincode *</label>
-          <input
-            className="input"
-            placeholder="700091"
-            maxLength={6}
-            value={data.pincode ?? ""}
-            onChange={(e) => onChange("pincode", e.target.value.replace(/\D/g, ""))}
-          />
-        </div>
-      </div>
-      <div>
-        <label className="label">State *</label>
-        <input
-          className="input"
-          placeholder="West Bengal"
-          value={data.state ?? ""}
-          onChange={(e) => onChange("state", e.target.value)}
-        />
-      </div>
-      <div>
-        <label className="label">Consultation type *</label>
-        <div className="flex gap-2">
-          {["In-person", "Online", "Both"].map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => onChange("consultType", t)}
-              className={cn(
-                "flex-1 py-2.5 text-sm rounded-xl border font-semibold transition-colors",
-                data.consultType === t
-                  ? "bg-brand text-white border-brand"
-                  : "bg-white text-zinc-600 border-zinc-200 hover:border-brand/30"
-              )}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className="space-y-5">
+      {DOC_FIELDS.map(({ key, label, hint, required }) => {
+        const file = docFiles[key];
+        return (
+          <div key={key}>
+            <label className="label">{label}</label>
+            <p className="text-xs text-zinc-400 mb-2">{hint}</p>
+            {file ? (
+              <div className="flex items-center justify-between p-3 rounded-xl border border-brand/20 bg-brand-light/30">
+                <span className="text-sm text-zinc-700 truncate">{file.name}</span>
+                <button
+                  type="button"
+                  onClick={() => onDocChange(key, null)}
+                  className="text-xs font-semibold text-red-500 hover:text-red-600 shrink-0 ml-2"
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <label className="flex items-center justify-center gap-2 border-2 border-dashed border-zinc-200 rounded-xl p-5 cursor-pointer hover:border-brand/40 hover:bg-brand-light/30 transition-colors">
+                <Upload className="w-4 h-4 text-zinc-400" />
+                <span className="text-sm text-zinc-500">
+                  {required ? "Click to upload (required)" : "Click to upload"}
+                </span>
+                <input
+                  type="file"
+                  accept="image/*,application/pdf"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) onDocChange(key, f);
+                  }}
+                />
+              </label>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-function Step4({
+function Step4Consent({
   consents,
   setConsents,
   visibility,
@@ -387,6 +348,8 @@ function Step4({
   setFee,
   bio,
   setBio,
+  clinics,
+  setClinics,
 }: {
   consents: boolean[];
   setConsents: (c: boolean[]) => void;
@@ -396,6 +359,8 @@ function Step4({
   setFee: (v: string) => void;
   bio: string;
   setBio: (v: string) => void;
+  clinics: import("@/lib/clinic-draft").ClinicDraft[];
+  setClinics: (c: import("@/lib/clinic-draft").ClinicDraft[]) => void;
 }) {
   const consentItems = [
     "I confirm the information I have provided is true and I am a registered medical practitioner.",
@@ -427,11 +392,37 @@ function Step4({
         </div>
         <div className="px-4">
           <VisibilityToggle
-            label="Phone number"
-            description="Let patients call you directly"
+            label="Your login phone number"
+            description="Let patients call you directly on your registered number"
             checked={visibility.showPhone}
             onChange={(v) => setVisibility({ ...visibility, showPhone: v })}
           />
+
+          {/* Per-clinic appointment phone toggles */}
+          {clinics.map((clinic, i) => {
+            const label = clinic.name.trim() || `Clinic #${i + 1}`;
+            const phone = clinic.appointmentPhone;
+            return (
+              <VisibilityToggle
+                key={clinic.id}
+                label={`Appointment phone — ${label}`}
+                description={
+                  phone
+                    ? `+91 ${phone} · patients call to book`
+                    : "No appointment number set for this clinic"
+                }
+                checked={clinic.showAppointmentPhone}
+                onChange={(v) =>
+                  setClinics(
+                    clinics.map((c) =>
+                      c.id === clinic.id ? { ...c, showAppointmentPhone: v } : c
+                    )
+                  )
+                }
+              />
+            );
+          })}
+
           <VisibilityToggle
             label="Consultation fee"
             description="Show your fee on your profile"
@@ -457,12 +448,12 @@ function Step4({
       <div>
         <label className="label">Consultation fee (optional)</label>
         <div className="relative">
-          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 text-sm font-medium">
+          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 text-sm font-medium select-none pointer-events-none">
             ₹
           </span>
           <input
-            className="input pl-8"
-            placeholder="e.g. 500"
+            className="input pl-9"
+            placeholder="500"
             inputMode="numeric"
             min={0}
             value={fee}
@@ -516,22 +507,70 @@ function Step4({
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<Record<string, string>>({ council: "WBMC" });
-  const [consents, setConsents] = useState<boolean[]>([false, false, false]);
-  const [visibility, setVisibility] = useState<VisibilitySettings>(DEFAULT_VISIBILITY);
-  const [fee, setFee] = useState("");
-  const [bio, setBio] = useState("");
-  const [clinicCoverPreview, setClinicCoverPreview] = useState<string | null>(null);
+  const {
+    step,
+    formData,
+    consents,
+    visibility,
+    clinics,
+    fee,
+    bio,
+    docFiles,
+    hydrated,
+    draftRestored,
+    draftSaveWarning,
+    setStep,
+    setConsents,
+    setVisibility,
+    setClinics,
+    setFee,
+    setBio,
+    setDocFiles,
+    updateField,
+    clearDraft,
+    clearDraftAfterSubmit,
+  } = useOnboardingDraft();
+
+  const [resubmitNote, setResubmitNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
-  function handleClinicCoverChange(_file: File | null, preview: string | null) {
-    setClinicCoverPreview(preview);
-  }
+  useEffect(() => {
+    if (!hydrated) return;
+    apiGet<{
+      doctor: {
+        status?: string;
+        rejectionReason?: string;
+        practiceLocations?: Parameters<typeof draftFromPracticeLocation>[0][];
+      } | null;
+    }>("/api/doctors/me")
+      .then((res) => {
+        if (res.doctor?.status === "rejected" && res.doctor.rejectionReason) {
+          setResubmitNote(res.doctor.rejectionReason);
+        }
+        const draft = loadOnboardingDraft();
+        const draftHasClinic = draft?.clinics?.some((c) => c.name.trim());
+        if (!draftHasClinic && res.doctor?.practiceLocations?.length) {
+          setClinics(res.doctor.practiceLocations.map((loc) => draftFromPracticeLocation(loc)));
+        }
+      })
+      .catch(() => {});
+  }, [hydrated, setClinics]);
 
-  function updateField(k: string, v: string) {
-    setFormData((prev) => ({ ...prev, [k]: v }));
+  async function handleDocChange(key: DocFieldLocal, file: File | null) {
+    if (!file) {
+      const next = { ...docFiles };
+      delete next[key];
+      setDocFiles(next);
+      return;
+    }
+    try {
+      const stored = await fileToStoredDraft(file);
+      setDocFiles({ ...docFiles, [key]: stored });
+    } catch {
+      setSubmitError("Could not save document locally — try a smaller file");
+    }
   }
 
   function nextStep() {
@@ -539,13 +578,133 @@ export default function OnboardingPage() {
     else handleSubmit();
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     setSubmitting(true);
-    // In real app: POST with visibility, fee, bio, buildRegistrationNumber(...)
-    setTimeout(() => {
-      setSubmitting(false);
+    setSubmitError("");
+    try {
+      const council = formData.council ?? "WBMC";
+      const registrationNumber = buildRegistrationNumber(
+        council,
+        formData.regYear!,
+        formData.regSerial!
+      );
+      const specialization = resolveSpecialization(
+        formData.specialization!,
+        formData.specializationOther
+      );
+
+      const documents: { type: DocumentType; url: string; fileName?: string; mimeType?: string }[] = [];
+
+      for (const { key } of DOC_FIELDS) {
+        const stored = docFiles[key];
+        if (!stored?.dataUrl) continue;
+        const file = await storedDraftToFile(stored);
+        const uploaded = await uploadFile(file);
+        documents.push({
+          type: key,
+          url: uploaded.url,
+          fileName: uploaded.fileName,
+          mimeType: uploaded.mimeType,
+        });
+      }
+
+      const practiceLocations: {
+        name: string;
+        address: string;
+        locality: string;
+        pincode: string;
+        state: string;
+        consultationType: ReturnType<typeof mapConsultType>;
+        imageUrl?: string;
+        schedule: ClinicDraft["scheduleSlots"];
+        appointmentRules: ReturnType<typeof clinicDraftToAppointmentRules>;
+      }[] = [];
+
+      for (const clinic of clinics) {
+        let imageUrl: string | undefined = clinic.coverPreview?.startsWith("http")
+          ? clinic.coverPreview
+          : undefined;
+
+        if (clinic.coverFile) {
+          const uploaded = await uploadFile(clinic.coverFile);
+          imageUrl = uploaded.url;
+          documents.push({
+            type: "clinic_cover",
+            url: uploaded.url,
+            fileName: uploaded.fileName,
+            mimeType: uploaded.mimeType,
+          });
+        } else if (clinic.coverPreview?.startsWith("data:")) {
+          const file = await dataUrlToFile(
+            clinic.coverPreview,
+            `clinic-${clinic.id}.jpg`,
+            "image/jpeg"
+          );
+          if (file) {
+            const uploaded = await uploadFile(file);
+            imageUrl = uploaded.url;
+            documents.push({
+              type: "clinic_cover",
+              url: uploaded.url,
+              fileName: uploaded.fileName,
+              mimeType: uploaded.mimeType,
+            });
+          }
+        } else if (clinic.coverPreview?.startsWith("http")) {
+          imageUrl = clinic.coverPreview;
+        }
+
+        practiceLocations.push({
+          name: clinic.name,
+          address: clinic.address,
+          locality: clinic.locality,
+          pincode: clinic.pincode,
+          state: clinic.state,
+          consultationType: mapConsultType(clinic.consultType),
+          imageUrl,
+          schedule: clinic.scheduleSlots,
+          appointmentRules: clinicDraftToAppointmentRules(clinic),
+        });
+      }
+
+      await apiPost("/api/doctors/apply", {
+        name: normalizeBareName(formData.name),
+        title: (formData.title as DoctorTitle) || "dr",
+        registrationNumber,
+        stateMedicalCouncil: council,
+        specialization,
+        yearsOfExperience: formData.experience ? parseInt(formData.experience, 10) : 0,
+        consultationFee: fee ? parseInt(fee, 10) : undefined,
+        bio: bio || undefined,
+        registrationMeta: {
+          council,
+          regYear: formData.regYear!,
+          regSerial: formData.regSerial!,
+        },
+        visibility: {
+          showPhone: visibility.showPhone,
+          showFee: visibility.showFee,
+          showExactAddress: visibility.showExactAddress,
+          showBio: true,
+          showLanguages: false,
+          showAvailabilityNote: visibility.showAvailabilityNote,
+        },
+        practiceLocations,
+        documents,
+        consents: {
+          termsAccepted: true,
+          dataSharingAccepted: true,
+          verificationAccepted: true,
+        },
+      });
+
+      clearDraftAfterSubmit();
       setSubmitted(true);
-    }, 1500);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : "Submission failed");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   const specValid =
@@ -559,21 +718,24 @@ export default function OnboardingPage() {
 
   const allConsents = consents.every(Boolean);
 
+  const clinicsValid = clinics.length > 0 && clinics.every(isClinicDraftValid);
+
   const canNext =
     step === 1
-      ? !!(formData.name && regValid && specValid)
+      ? !!(normalizeBareName(formData.name).length >= 2 && regValid && specValid)
       : step === 2
-      ? true
+      ? !!(docFiles.photo?.dataUrl && docFiles.registration_cert?.dataUrl)
       : step === 3
-      ? !!(
-          formData.clinicName &&
-          formData.address &&
-          formData.locality &&
-          formData.pincode &&
-          formData.state &&
-          formData.consultType
-        )
+      ? clinicsValid
       : allConsents;
+
+  if (!hydrated) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-16 text-center text-sm text-zinc-500">
+        Loading your registration…
+      </div>
+    );
+  }
 
   if (submitted) {
     return (
@@ -607,6 +769,39 @@ export default function OnboardingPage() {
 
       <StepIndicator current={step} />
 
+      {draftRestored && (
+        <div className="flex items-start justify-between gap-3 p-3 mb-6 bg-emerald-50 border border-emerald-200 rounded-xl">
+          <p className="text-xs text-emerald-800 leading-relaxed">
+            <strong>Saved locally.</strong> Your progress from step {step} was restored after refresh.
+          </p>
+          <button
+            type="button"
+            onClick={clearDraft}
+            className="text-xs font-semibold text-emerald-700 hover:text-emerald-900 shrink-0"
+          >
+            Start over
+          </button>
+        </div>
+      )}
+
+      {draftSaveWarning && (
+        <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-4">
+          Some uploaded files are too large to save in the browser. Re-upload documents if they
+          disappear after refresh.
+        </p>
+      )}
+
+      {resubmitNote && (
+        <div className="flex items-start gap-3 p-4 mb-6 bg-amber-50 border border-amber-200 rounded-2xl">
+          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold text-amber-900">Admin asked for changes</p>
+            <p className="text-sm text-amber-800 mt-1 leading-relaxed">{resubmitNote}</p>
+            <p className="text-xs text-amber-700 mt-2">Update your details below and submit again.</p>
+          </div>
+        </div>
+      )}
+
       <style>{`
         .label { display:block; font-size:0.8125rem; font-weight:600; color:#3f3f46; margin-bottom:0.375rem; }
         .input { width:100%; padding:0.75rem 1rem; font-size:0.875rem; font-weight:500; color:#18181b; border-radius:0.75rem; border:1px solid #e4e4e7; outline:none; background:white; transition:box-shadow 0.15s; }
@@ -615,17 +810,10 @@ export default function OnboardingPage() {
 
       <div className="bg-white rounded-[20px] card-shadow p-6 mb-6">
         {step === 1 && <Step1 data={formData} onChange={updateField} />}
-        {step === 2 && <Step2 />}
-        {step === 3 && (
-          <Step3
-            data={formData}
-            onChange={updateField}
-            clinicCoverPreview={clinicCoverPreview}
-            onClinicCoverChange={handleClinicCoverChange}
-          />
-        )}
+        {step === 2 && <Step2 docFiles={docFiles} onDocChange={handleDocChange} />}
+        {step === 3 && <MultiClinicStep clinics={clinics} onChange={setClinics} />}
         {step === 4 && (
-          <Step4
+          <Step4Consent
             consents={consents}
             setConsents={setConsents}
             visibility={visibility}
@@ -634,9 +822,15 @@ export default function OnboardingPage() {
             setFee={setFee}
             bio={bio}
             setBio={setBio}
+            clinics={clinics}
+            setClinics={setClinics}
           />
         )}
       </div>
+
+      {submitError && (
+        <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg mb-3">{submitError}</p>
+      )}
 
       <div className="flex gap-3">
         {step > 1 && (
